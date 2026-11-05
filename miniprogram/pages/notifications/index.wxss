@@ -1,0 +1,1 @@
+.no-pad{padding:0}.head{padding:34rpx 28rpx}.list{overflow:hidden}.notice-icon{width:82rpx;height:82rpx;background:#edf5ff;border-radius:22rpx;display:flex;align-items:center;justify-content:center;font-size:40rpx;margin-right:22rpx}.unread{background:#f2f7ff}.dot{width:14rpx;height:14rpx;background:#1677ff;border-radius:50%;margin-left:12rpx}.body{font-size:24rpx}

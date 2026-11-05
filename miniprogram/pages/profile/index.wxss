@@ -1,0 +1,1 @@
+.profile{text-align:center}.profile-avatar{width:150rpx;height:150rpx;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;margin:0 auto 18rpx;font-size:76rpx}.bio{margin-top:24rpx;line-height:1.5}.menu{border-radius:28rpx;overflow:hidden;margin-top:24rpx}.menu-icon{font-size:38rpx;margin-right:24rpx}

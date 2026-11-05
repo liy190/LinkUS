@@ -1,0 +1,7 @@
+.welcome { min-height: 100vh; box-sizing: border-box; padding: 190rpx 60rpx 70rpx; text-align: center; color: #fff; background: linear-gradient(160deg,#0868f5,#6ec5ff); }
+.logo { font-size: 150rpx; }
+.brand { font-size: 78rpx; font-weight: 900; letter-spacing: 4rpx; }
+.tagline { font-size: 32rpx; margin-top: 18rpx; }
+.campus { opacity: .76; margin-top: 12rpx; }
+.start { margin-top: 150rpx; background: #fff; color: #1677ff; border-radius: 999rpx; font-weight: 800; line-height: 96rpx; }
+.privacy { margin-top: 32rpx; font-size: 22rpx; opacity: .72; line-height: 1.5; }

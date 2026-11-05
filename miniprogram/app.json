@@ -1,0 +1,50 @@
+{
+  "pages": [
+    "pages/welcome/index",
+    "pages/map/index",
+    "pages/place-detail/index",
+    "pages/chats/index",
+    "pages/chat/index",
+    "pages/groups/index",
+    "pages/group-detail/index",
+    "pages/discover/index",
+    "pages/nearby/index",
+    "pages/notifications/index",
+    "pages/profile/index",
+    "pages/profile-edit/index",
+    "pages/privacy/index",
+    "pages/activities/index",
+    "pages/activity-detail/index",
+    "pages/activity-create/index",
+    "pages/feedback/index"
+  ],
+  "window": {
+    "backgroundColor": "#F4F7FB",
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#1677FF",
+    "navigationBarTitleText": "LinkUS",
+    "navigationBarTextStyle": "white"
+  },
+  "tabBar": {
+    "color": "#8B96A8",
+    "selectedColor": "#1677FF",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      { "pagePath": "pages/map/index", "text": "Map" },
+      { "pagePath": "pages/chats/index", "text": "Chats" },
+      { "pagePath": "pages/groups/index", "text": "Groups" },
+      { "pagePath": "pages/discover/index", "text": "Discover" },
+      { "pagePath": "pages/notifications/index", "text": "Notices" }
+    ]
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "用于在香港大学校园地图中显示你附近的地点；位置共享默认关闭"
+    }
+  },
+  "requiredPrivateInfos": ["getLocation"],
+  "sitemapLocation": "sitemap.json",
+  "style": "v2",
+  "lazyCodeLoading": "requiredComponents"
+}

@@ -1,0 +1,23 @@
+<view class="map-page">
+  <view class="top row">
+    <view class="profile" bindtap="openProfile">🐬</view>
+    <view class="search grow"><input placeholder="Search places at HKU" bindinput="search" /></view>
+    <view class="privacy-icon" bindtap="openPrivacy">{{privacy.enabled ? '📍' : '🔒'}}</view>
+  </view>
+  <view class="campus-map">
+    <view class="campus-label">THE UNIVERSITY OF HONG KONG</view>
+    <view class="road road-a"></view><view class="road road-b"></view><view class="road road-c"></view>
+    <view wx:for="{{places}}" wx:key="id" class="place-pin" style="left:{{item.x}}%;top:{{item.y}}%" data-id="{{item.id}}" bindtap="openPlace">
+      <view class="pin">{{item.emoji}}</view><view class="pin-name">{{item.short}}</view>
+    </view>
+    <view wx:for="{{people}}" wx:key="id" class="person-pin" style="left:{{15 + index * 20}}%;top:{{28 + (index % 2) * 38}}%">{{item.avatar}}</view>
+  </view>
+  <view class="sheet">
+    <view class="row between"><view><view class="name">Around HKU</view><view class="muted">{{privacy.enabled ? 'Place-level sharing is active' : 'Your location is private'}}</view></view><view class="pill" bindtap="openPrivacy">Privacy</view></view>
+    <scroll-view scroll-x class="place-scroll">
+      <view wx:for="{{filtered}}" wx:key="id" class="mini-card" data-id="{{item.id}}" bindtap="openPlace">
+        <view class="mini-emoji">{{item.emoji}}</view><view class="name">{{item.short}}</view><view class="muted">{{item.people}} people · {{item.status}}</view>
+      </view>
+    </scroll-view>
+  </view>
+</view>

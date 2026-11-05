@@ -1,0 +1,8 @@
+<view class="welcome">
+  <view class="logo">🐬</view>
+  <view class="brand">LinkUS</view>
+  <view class="tagline">Meet your people at HKU</view>
+  <view class="campus">The University of Hong Kong</view>
+  <button class="start" bindtap="enter">Explore campus</button>
+  <view class="privacy">Location sharing is always off until you choose to turn it on.</view>
+</view>

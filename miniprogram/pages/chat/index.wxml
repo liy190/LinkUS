@@ -1,0 +1,9 @@
+<view class="chat-page">
+  <scroll-view scroll-y class="messages" scroll-into-view="last">
+    <view wx:for="{{list}}" wx:key="id" class="message-row {{item.from === 'me' ? 'mine' : ''}}">
+      <view class="author" wx:if="{{item.author && item.from !== 'me'}}">{{item.author}}</view>
+      <view class="bubble">{{item.text}}</view><view class="time">{{item.time}}</view>
+    </view><view id="last"></view>
+  </scroll-view>
+  <view class="composer row"><input class="input grow" value="{{text}}" bindinput="type" confirm-type="send" bindconfirm="send" placeholder="Write a message"/><button class="send" bindtap="send">Send</button></view>
+</view>

@@ -1,0 +1,9 @@
+<view class="page">
+  <view class="hero place-hero"><view class="place-emoji">{{place.emoji}}</view><view class="title">{{place.name}}</view><view class="subtitle">HKU · {{place.status}} · {{place.people}} people nearby</view></view>
+  <view class="card"><view class="section-title first">About</view><view class="subtitle">{{place.description}}</view><view><text wx:for="{{place.tags}}" wx:key="*this" class="pill">{{item}}</text></view></view>
+  <view class="section-title">People here now</view>
+  <view class="card" wx:if="{{people.length}}"><view wx:for="{{people}}" wx:key="id" class="row person"><view class="avatar">{{item.avatar}}</view><view><view class="name">{{item.name}}</view><view class="muted">{{item.status}}</view></view></view></view>
+  <view class="card empty" wx:else>No one is sharing this place right now.</view>
+  <button class="button" bindtap="discuss">Open place discussion</button>
+  <button class="secondary action" bindtap="activity">Create an activity here</button>
+</view>
