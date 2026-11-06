@@ -1,6 +1,6 @@
-.header{position:relative;padding-right:22rpx;padding-bottom:10rpx;padding-left:22rpx;box-sizing:border-box;background:#fff;display:flex;align-items:center;border-bottom:2rpx solid #e8e8e8;box-shadow:0 3rpx 8rpx rgba(0,0,0,.08)}
-.dolphin{width:68rpx;height:68rpx;border-radius:50%;background:#dff4ff;border:3rpx solid #6ba7d5;display:flex;align-items:center;justify-content:center;font-size:42rpx;flex-shrink:0}
-.wordmark{position:absolute;left:50%;transform:translateX(-50%);color:#0039b8;font-size:36rpx;font-weight:900;font-style:italic;letter-spacing:-2rpx}
+.header{position:relative;padding-right:22rpx;padding-bottom:10rpx;padding-left:22rpx;box-sizing:border-box;background:#fff;display:flex;align-items:center;border-bottom:2rpx solid #e9eaeb;box-shadow:0 8rpx 24rpx rgba(13,10,44,.06)}
+.dolphin{width:72rpx;height:72rpx;border-radius:50%;background:#dff4ff;border:4rpx solid #64a7ff;box-sizing:border-box;flex-shrink:0}
+.wordmark{position:absolute;left:50%;bottom:15rpx;transform:translateX(-50%);width:176rpx;height:72rpx}
 .floating-actions{position:fixed;right:26rpx;bottom:calc(148rpx + env(safe-area-inset-bottom));z-index:980;height:86rpx;padding:0 8rpx;display:flex;align-items:center;border:2rpx solid rgba(44,92,145,.12);border-radius:43rpx;background:rgba(255,255,255,.96);box-shadow:0 10rpx 30rpx rgba(27,58,102,.22)}
 .floating-actions.single{padding:0}
 .floating-button{width:72rpx;height:72rpx;border-radius:50%;display:flex;align-items:center;justify-content:center}

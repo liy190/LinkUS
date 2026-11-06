@@ -1,26 +1,42 @@
 <view class="chat-page">
   <view class="chat-nav" style="height:{{navHeight}}px;padding-top:{{navTopPadding}}px;">
-    <text bindtap="back">‹</text>
-    <view class="nav-person"><image src="{{avatar}}" mode="aspectFill"/><view><view class="nav-title">Message</view><view class="person">{{title}}</view></view></view>
-    <text data-name="Call" bindtap="action">Call</text>
+    <view class="nav-circle back" bindtap="back">←</view>
+    <view class="nav-title">Message</view>
+    <view class="nav-circle more" data-name="More" bindtap="action">•••</view>
+  </view>
+  <view class="contact-bar">
+    <view class="contact-person">
+      <image class="contact-avatar" src="{{avatar}}" mode="aspectFill"/>
+      <view><view class="person-name">{{title}}</view><view class="person-status">LinkUS member</view></view>
+    </view>
+    <view class="contact-actions"><view data-name="Video" bindtap="action">▢</view><view data-name="Call" bindtap="action">⌕</view></view>
   </view>
   <scroll-view scroll-y class="messages" scroll-into-view="last">
     <view class="date">JULY 21 AT 14:14</view>
     <view wx:for="{{list}}" wx:key="id" class="message-row {{item.from === 'me' ? 'mine' : ''}}">
-      <image wx:if="{{item.from !== 'me'}}" class="message-avatar" src="{{item.avatar}}" mode="aspectFill"/>
+      <image wx:if="{{item.from !== 'me'}}" class="message-avatar" src="{{item.avatar || avatar}}" mode="aspectFill"/>
       <view class="bubble-stack">
         <view class="author" wx:if="{{item.author && item.from !== 'me'}}">{{item.author}}</view>
         <view class="bubble">{{item.text}}</view>
-        <view class="time">{{item.time}}</view>
+        <view class="time">{{item.time}}<text wx:if="{{item.from === 'me'}}">  ✓✓</text></view>
       </view>
       <image wx:if="{{item.from === 'me'}}" class="message-avatar mine-avatar" src="{{currentAvatar}}" mode="aspectFill"/>
     </view>
-    <view id="last"></view>
+    <view id="last" class="last-anchor"></view>
   </scroll-view>
-  <view class="composer">
-    <view class="input-row"><input value="{{text}}" bindinput="type" bindconfirm="send" confirm-type="send" placeholder="Type a message ..."/><text bindtap="send">↑</text></view>
-    <view class="quick">
-      <view data-name="Camera" bindtap="action"><b class="coral">●</b><text>Camera</text></view><view data-name="Record" bindtap="action"><b class="blue">●</b><text>Record</text></view><view data-name="Contact" bindtap="action"><b class="navy">●</b><text>Contact</text></view><view data-name="Media" bindtap="action"><b class="yellow">●</b><text>Media</text></view><view data-name="My Location" bindtap="action"><b class="cyan">⌖</b><text>My Location</text></view><view data-name="Document" bindtap="action"><b class="green">●</b><text>Document</text></view>
+  <view class="composer {{attachmentsOpen ? 'expanded' : ''}}">
+    <view class="input-row">
+      <view class="add-button" bindtap="toggleAttachments">{{attachmentsOpen ? '×' : '+'}}</view>
+      <input value="{{text}}" bindinput="type" bindconfirm="send" confirm-type="send" placeholder="Type a message ..."/>
+      <view class="send-button" bindtap="send">↑</view>
+    </view>
+    <view class="quick" wx:if="{{attachmentsOpen}}">
+      <view data-name="Camera" bindtap="action"><view class="quick-icon coral">▣</view><text>Camera</text></view>
+      <view data-name="Record" bindtap="action"><view class="quick-icon blue">●</view><text>Record</text></view>
+      <view data-name="Contact" bindtap="action"><view class="quick-icon navy">◉</view><text>Contact</text></view>
+      <view data-name="Media" bindtap="action"><view class="quick-icon yellow">◇</view><text>Media</text></view>
+      <view data-name="My Location" bindtap="action"><view class="quick-icon cyan">⌖</view><text>My Location</text></view>
+      <view data-name="Document" bindtap="action"><view class="quick-icon green">▤</view><text>Document</text></view>
     </view>
   </view>
 </view>

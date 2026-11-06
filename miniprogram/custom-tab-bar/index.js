@@ -1,12 +1,13 @@
 Component({
   data: {
     selected: 0,
+    hidden: false,
     list: [
-      { pagePath: '/pages/map/index', text: 'Map', icon: '⌖' },
-      { pagePath: '/pages/chats/index', text: 'Chats', icon: '●' },
-      { pagePath: '/pages/groups/index', text: 'Groups', icon: '♧' },
-      { pagePath: '/pages/discover/index', text: 'Discover', icon: '◉' },
-      { pagePath: '/pages/notifications/index', text: 'Notices', icon: '♢' },
+      { pagePath: '/pages/map/index', text: 'Map', kind: 'map' },
+      { pagePath: '/pages/chats/index', text: 'Chats', kind: 'chat' },
+      { pagePath: '/pages/groups/index', text: 'Groups', kind: 'groups' },
+      { pagePath: '/pages/discover/index', text: 'Discover', kind: 'discover' },
+      { pagePath: '/pages/notifications/index', text: 'Notification', kind: 'notice' },
     ],
   },
   methods: {

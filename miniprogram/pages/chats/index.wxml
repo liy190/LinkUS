@@ -1,6 +1,6 @@
 <view class="screen">
   <linkus-header bind:add="add"/>
-  <view class="search">⌕ search</view>
+  <view class="search"><image src="/images/figma/search.svg" mode="aspectFit"/><text>search</text></view>
   <view class="list">
     <view wx:for="{{list}}" wx:key="id" class="chat-row" data-id="{{item.id}}" data-title="{{item.title}}" data-avatar="{{item.avatar}}" bindtap="open">
       <image class="avatar" src="{{item.avatar}}" mode="aspectFill"/>
@@ -9,4 +9,5 @@
     </view>
   </view>
   <view class="empty" wx:if="{{!loading && !list.length}}">No conversations yet. Tap + to meet another LinkUS user.</view>
+  <view class="tab-safe"></view>
 </view>

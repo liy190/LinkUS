@@ -1,1 +1,11 @@
-<view class="screen"><linkus-header bind:add="add"/><view class="discover-row" data-url="/pages/activities/index" bindtap="open"><text class="ico coral">◉</text><text>Moments</text><text class="arrow">›</text></view><view class="discover-row" data-url="/pages/nearby/index" bindtap="open"><text class="ico blue">♧</text><text>Nearby</text><text class="arrow">›</text></view><view class="discover-row" data-url="/pages/activities/index" bindtap="open"><text class="ico green">♪</text><text>Listen</text><text class="arrow">›</text></view><view class="discover-row" data-url="/pages/nearby/index" bindtap="open"><text class="ico black">⌕</text><text>Search</text><text class="arrow">›</text></view><view class="discover-row" data-url="/pages/feedback/index" bindtap="open"><text class="ico gold">◎</text><text>Live</text><text class="arrow">›</text></view></view>
+<view class="screen">
+  <linkus-header bind:add="add"/>
+  <view class="discover-list">
+    <view class="discover-row" data-url="/pages/activities/index" bindtap="open"><view class="ico coral">◉</view><text>Moments</text><text class="arrow">›</text></view>
+    <view class="discover-row" data-url="/pages/nearby/index" bindtap="open"><view class="ico blue">♧</view><text>Nearby</text><text class="arrow">›</text></view>
+    <view class="discover-row" data-url="/pages/activities/index" bindtap="open"><view class="ico green">♫</view><text>Listen</text><text class="arrow">›</text></view>
+    <view class="discover-row" data-url="/pages/nearby/index" bindtap="open"><view class="ico black">⌕</view><text>Search</text><text class="arrow">›</text></view>
+    <view class="discover-row" data-url="/pages/feedback/index" bindtap="open"><view class="ico gold">◎</view><text>Live</text><text class="arrow">›</text></view>
+  </view>
+  <view class="tab-safe"></view>
+</view>

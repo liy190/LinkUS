@@ -37,6 +37,7 @@ Page({
   },
 
   onShow() {
+    if (this.getTabBar()) this.getTabBar().setData({ selected: 0, hidden: false });
     const privacy = store.getPrivacy();
     this.setData({ privacy, liveStatus: privacy.enabled ? 'Location sharing ready' : 'Location sharing is off' });
     this.refreshMap();
@@ -46,7 +47,6 @@ Page({
         if (authSetting['scope.userLocation']) this.locate(false);
       },
     });
-    if (this.getTabBar()) this.getTabBar().setData({ selected: 0 });
   },
 
   refreshMap(sharedUsers = this.sharedUsers || []) {

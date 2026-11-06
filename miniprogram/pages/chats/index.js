@@ -4,7 +4,7 @@ Page({
   data: { list: [], loading: true },
   onShow() {
     this.load();
-    if (this.getTabBar()) this.getTabBar().setData({ selected: 1 });
+    if (this.getTabBar()) this.getTabBar().setData({ selected: 1, hidden: false });
   },
   load() {
     this.setData({ loading: true });

@@ -14,6 +14,10 @@ Page({
     this.avatarTempPath = avatarPreview;
     this.setData({ avatarPreview });
   },
+  cancel() {
+    if (this.onboarding) wx.navigateBack({ fail: () => wx.redirectTo({ url: '/pages/login/index' }) });
+    else wx.navigateBack();
+  },
   save() {
     if (this.data.saving) return;
     const form = this.data.form;

@@ -1,6 +1,6 @@
 <view class="header" style="height:{{headerHeight}}px;padding-top:{{topPadding}}px;padding-right:{{rightPadding}}px;">
-  <view class="dolphin" bindtap="profile">🐬</view>
-  <view class="wordmark">LinkUS</view>
+  <image class="dolphin" src="/images/figma/dolphin-avatar.png" mode="aspectFill" bindtap="profile" />
+  <image class="wordmark" src="/images/figma/linkus-wordmark.png" mode="aspectFit" />
 </view>
 <view class="floating-actions {{showAdd ? '' : 'single'}}">
   <view class="floating-button" bindtap="map" hover-class="floating-button-active" aria-role="button" aria-label="Open campus map">
@@ -8,6 +8,6 @@
   </view>
   <view class="divider" wx:if="{{showAdd}}"></view>
   <view class="floating-button" wx:if="{{showAdd}}" bindtap="add" hover-class="floating-button-active" aria-role="button" aria-label="Create new item">
-    <text class="plus">＋</text>
+    <text class="plus">+</text>
   </view>
 </view>

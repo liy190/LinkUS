@@ -10,6 +10,7 @@ Page({
     list: [],
     text: '',
     sending: false,
+    attachmentsOpen: false,
     navHeight: 88,
     navTopPadding: 44,
   },
@@ -65,6 +66,10 @@ Page({
       wx.showToast({ title: error.message || 'Send failed', icon: 'none' });
     }).finally(() => this.setData({ sending: false }));
   },
-  action(e) { wx.showToast({ title: `${e.currentTarget.dataset.name} coming next`, icon: 'none' }); },
+  toggleAttachments() { this.setData({ attachmentsOpen: !this.data.attachmentsOpen }); },
+  action(e) {
+    this.setData({ attachmentsOpen: false });
+    wx.showToast({ title: `${e.currentTarget.dataset.name} coming next`, icon: 'none' });
+  },
   back() { wx.navigateBack(); },
 });

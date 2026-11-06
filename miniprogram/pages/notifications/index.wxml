@@ -1,1 +1,13 @@
-<view class="screen"><linkus-header bind:add="add"/><view class="search">⌕ search</view><view wx:for="{{list}}" wx:key="id" class="notice-row" data-id="{{item.id}}" bindtap="open"><view class="notice-icon">{{item.icon}}</view><view class="grow"><view class="name">{{item.title}}</view><view class="preview">{{item.body}}</view></view><view class="meta"><view class="time">{{index ? '9:45 07/13' : '12:20 07/13'}}</view><view class="badge" wx:if="{{item.unread}}">{{index + 1}}</view></view></view></view>
+<view class="screen">
+  <linkus-header bind:add="add"/>
+  <view class="search"><image src="/images/figma/search.svg" mode="aspectFit"/><text>search</text></view>
+  <view class="notice-list">
+    <view wx:for="{{list}}" wx:key="id" class="notice-row" data-id="{{item.id}}" bindtap="open">
+      <view class="notice-icon kind-{{item.iconKind}}"><view class="icon-shape"></view></view>
+      <view class="grow"><view class="name">{{item.title}}</view><view class="preview">{{item.body}}</view></view>
+      <view class="meta"><view class="time">{{index ? '9:45 07/13' : '12:20 07/13'}}</view><view class="badge" wx:if="{{item.unread}}">{{index + 1}}</view></view>
+    </view>
+  </view>
+  <view class="empty" wx:if="{{!loading && !list.length}}">You are all caught up.</view>
+  <view class="tab-safe"></view>
+</view>

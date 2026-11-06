@@ -1,12 +1,10 @@
 <view class="edit-page">
-  <view class="sheet-handle"></view><view class="sheet-title">My Profile</view>
-  <button class="avatar-button" open-type="chooseAvatar" bindchooseavatar="chooseAvatar">
-    <image class="avatar-edit" src="{{avatarPreview}}" mode="aspectFill"/><view class="camera">✎</view>
-  </button>
+  <view class="edit-nav"><view class="cancel-link" bindtap="cancel">Cancel</view><view class="sheet-title">Edit Profile</view><view class="nav-spacer"></view></view>
+  <button class="avatar-button" open-type="chooseAvatar" bindchooseavatar="chooseAvatar"><image class="avatar-edit" src="{{avatarPreview}}" mode="aspectFill"/><view class="camera">✎</view></button>
   <view class="avatar-help">Use a WeChat avatar or choose another image</view>
-  <view class="form-row"><text>Display name</text><input type="nickname" placeholder="Choose your nickname" value="{{form.nickname}}" data-key="nickname" bindinput="change"/></view>
-  <view class="form-row"><text>Faculty</text><input placeholder="Optional" value="{{form.faculty}}" data-key="faculty" bindinput="change"/></view>
-  <view class="form-row"><text>Bio</text><input placeholder="Tell people about yourself" value="{{form.bio}}" data-key="bio" bindinput="change"/></view>
+  <view class="field-group"><view class="field-label">Name</view><input class="design-field" type="nickname" placeholder="Choose your nickname" value="{{form.nickname}}" data-key="nickname" bindinput="change"/></view>
+  <view class="field-group"><view class="field-label">Faculty</view><input class="design-field" placeholder="Optional" value="{{form.faculty}}" data-key="faculty" bindinput="change"/></view>
+  <view class="field-group"><view class="field-label">Bio</view><textarea class="design-field bio-field" placeholder="Tell people about yourself" value="{{form.bio}}" data-key="bio" bindinput="change" maxlength="240"/></view>
   <view class="private-note">Your WeChat identity stays private. Other users see only the LinkUS profile you create here.</view>
-  <button class="save" loading="{{saving}}" disabled="{{saving}}" bindtap="save">Save Profile</button>
+  <view class="form-actions"><button class="cancel-button" bindtap="cancel">Cancel</button><button class="save" loading="{{saving}}" disabled="{{saving}}" bindtap="save">Save</button></view>
 </view>

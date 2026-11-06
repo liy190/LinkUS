@@ -1,9 +1,9 @@
 <view class="login-page">
   <view class="red-corner"></view><view class="blue-corner"></view>
   <view class="login-content">
-    <view class="brand">LinkUS</view>
-    <view class="journey">Your Journey<br/><b>Begins Here</b></view>
-    <view class="intro">Connect with peers and discover<br/>new friendships across campus.</view>
+    <image class="brand" src="/images/figma/linkus-wordmark.png" mode="aspectFit" />
+    <view class="journey"><view>Your Journey</view><view class="journey-strong">Begins Here</view></view>
+    <view class="intro"><view>Connect with peers and discover</view><view>new friendships across campus.</view></view>
     <view class="login-card">
       <view class="login-title">Continue with WeChat</view>
       <view class="login-note">A private LinkUS ID will be created automatically. You choose what profile information to share.</view>
