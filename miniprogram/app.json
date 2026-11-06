@@ -42,7 +42,7 @@
   },
   "permission": {
     "scope.userLocation": {
-      "desc": "用于香港大学校园地图定位与导航；位置共享默认关闭，并可随时撤销"
+      "desc": "用于港大校园定位导航和位置共享"
     }
   },
   "requiredPrivateInfos": ["getLocation"],
