@@ -1,11 +1,14 @@
-const store = require('../../services/store');
+const api = require('../../services/api');
 Page({
-  data: { list: [] },
-  onShow() { this.setData({ list: store.getNotifications() }); },
+  data: { list: [], loading: true },
+  onShow() { this.load(); if (this.getTabBar()) this.getTabBar().setData({ selected: 4 }); },
+  load() { this.setData({ loading: true }); return api.listNotifications().then((list) => this.setData({ list })).finally(() => this.setData({ loading: false })); },
+  add() { this.readAll(); },
   open(e) {
-    const id = e.currentTarget.dataset.id; const list = store.getNotifications(); const item = list.find((n) => n.id === id);
-    store.saveNotifications(list.map((n) => n.id === id ? { ...n, unread: false } : n)); this.setData({ list: store.getNotifications() });
-    if (item && item.target) wx.navigateTo({ url: item.target });
+    const item = this.data.list.find((notice) => notice.id === e.currentTarget.dataset.id);
+    if (!item) return;
+    api.markNotification(item.id).then(() => this.load());
+    if (item.target) wx.navigateTo({ url: item.target });
   },
-  readAll() { store.saveNotifications(store.getNotifications().map((n) => ({ ...n, unread: false }))); this.onShow(); },
+  readAll() { api.markAllNotifications().then(() => this.load()); },
 });

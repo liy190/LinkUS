@@ -1,0 +1,13 @@
+<view class="header" style="height:{{headerHeight}}px;padding-top:{{topPadding}}px;padding-right:{{rightPadding}}px;">
+  <view class="dolphin" bindtap="profile">🐬</view>
+  <view class="wordmark">LinkUS</view>
+</view>
+<view class="floating-actions {{showAdd ? '' : 'single'}}">
+  <view class="floating-button" bindtap="map" hover-class="floating-button-active" aria-role="button" aria-label="Open campus map">
+    <view class="grid"><text class="grid-dot"></text><text class="grid-dot"></text><text class="grid-dot"></text><text class="grid-dot"></text></view>
+  </view>
+  <view class="divider" wx:if="{{showAdd}}"></view>
+  <view class="floating-button" wx:if="{{showAdd}}" bindtap="add" hover-class="floating-button-active" aria-role="button" aria-label="Create new item">
+    <text class="plus">＋</text>
+  </view>
+</view>

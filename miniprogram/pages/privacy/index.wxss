@@ -1,1 +1,2 @@
-.option{display:block;padding:22rpx 0}.picker{padding:24rpx 0;color:#1677ff;border-bottom:2rpx solid #edf0f5}.legal{margin-top:34rpx}
+.option{display:block;padding:22rpx 0}.picker{padding:24rpx 0;color:#1677ff;border-bottom:2rpx solid #edf0f5}.legal{margin-top:34rpx}.warning{padding:18rpx;border-radius:12rpx;background:#fff7e8;color:#95620a;font-size:19rpx;line-height:1.45}
+.distance-consent{margin-top:26rpx;padding-top:24rpx;border-top:2rpx solid #edf0f5}.distance-note{margin-top:16rpx;padding:18rpx;border-radius:12rpx;background:#eef6ff;color:#48637f;font-size:19rpx;line-height:1.5}

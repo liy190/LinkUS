@@ -1,0 +1,1 @@
+<view class="bar"><view wx:for="{{list}}" wx:key="pagePath" class="item {{selected === index ? 'active' : ''}}" data-path="{{item.pagePath}}" bindtap="switchTab"><view class="icon">{{item.icon}}</view><view class="text">{{item.text}}</view></view></view>

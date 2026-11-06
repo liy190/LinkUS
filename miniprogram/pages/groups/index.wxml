@@ -1,7 +1,1 @@
-<view class="page">
-  <view class="hero"><view class="title">Find your circle</view><view class="subtitle">Join interest groups and course communities at HKU.</view></view>
-  <view class="section-title">Your campus groups</view>
-  <view wx:for="{{list}}" wx:key="id" class="card row" data-id="{{item.id}}" bindtap="open">
-    <view class="avatar">{{item.avatar}}</view><view class="grow"><view class="name">{{item.name}}</view><view class="muted">{{item.members}} members · {{item.joined ? 'Joined' : 'Open to join'}}</view><view class="subtitle desc">{{item.description}}</view></view><view class="chevron">›</view>
-  </view>
-</view>
+<view class="screen"><linkus-header bind:add="add"/><view class="search">⌕ search</view><view wx:for="{{list}}" wx:key="id" class="group-row" data-id="{{item.id}}" bindtap="open"><view class="avatar">{{item.avatar}}</view><view class="grow"><view class="name">{{item.name}} ({{item.members}})</view><view class="preview">{{item.description}}</view></view><view class="meta"><view class="time">{{index ? '12:20 07/13' : '1:25'}}</view><view class="badge" wx:if="{{item.joined}}">{{index + 1}}</view></view></view></view>

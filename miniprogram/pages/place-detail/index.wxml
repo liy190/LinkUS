@@ -1,9 +1,39 @@
-<view class="page">
-  <view class="hero place-hero"><view class="place-emoji">{{place.emoji}}</view><view class="title">{{place.name}}</view><view class="subtitle">HKU · {{place.status}} · {{place.people}} people nearby</view></view>
-  <view class="card"><view class="section-title first">About</view><view class="subtitle">{{place.description}}</view><view><text wx:for="{{place.tags}}" wx:key="*this" class="pill">{{item}}</text></view></view>
-  <view class="section-title">People here now</view>
-  <view class="card" wx:if="{{people.length}}"><view wx:for="{{people}}" wx:key="id" class="row person"><view class="avatar">{{item.avatar}}</view><view><view class="name">{{item.name}}</view><view class="muted">{{item.status}}</view></view></view></view>
-  <view class="card empty" wx:else>No one is sharing this place right now.</view>
-  <button class="button" bindtap="discuss">Open place discussion</button>
-  <button class="secondary action" bindtap="activity">Create an activity here</button>
+<view class="detail-page">
+  <map class="mini-map" latitude="{{place.gcj.latitude}}" longitude="{{place.gcj.longitude}}" scale="17" markers="{{markers}}" show-location="{{showLocation}}" enable-zoom enable-scroll enable-rotate />
+  <view class="back-button" bindtap="back">‹</view>
+  <view class="content-sheet">
+    <view class="grab"></view>
+    <view class="search-strip">⌕ Search　Map <text>🐬</text></view>
+    <view class="place-head">
+      <view class="grow center">
+        <view class="place-title">{{place.name}}</view>
+        <view class="place-sub">THE UNIVERSITY OF HONG KONG</view>
+        <view class="distance" bindtap="measure">{{place.distance}}</view>
+      </view>
+      <view class="thumb">{{place.emoji}}</view>
+    </view>
+
+    <view class="people-section">
+      <view class="section-heading"><text>People at this place</text><text class="demo-label">{{peopleLabel}}</text></view>
+      <scroll-view scroll-x enhanced show-scrollbar="{{false}}" class="people-scroll">
+        <view class="person-card" wx:for="{{people}}" wx:key="id" data-id="{{item.id}}" bindtap="openPerson">
+          <image class="person-avatar" src="{{item.avatar}}" mode="aspectFill" />
+          <view class="person-name">{{item.name}}</view>
+          <view class="person-status">{{item.status}}</view>
+        </view>
+        <view class="empty-people" wx:if="{{!people.length}}">No one is sharing this place right now.</view>
+      </scroll-view>
+    </view>
+
+    <view class="photos">
+      <view class="photo p1"><text>{{place.short}}</text><text class="small">HKU CAMPUS</text></view>
+      <view class="photo p2"><text>{{place.emoji}}</text><text class="small">{{place.status}}</text></view>
+    </view>
+    <view class="information">
+      <view class="info-title">Information</view>
+      <view class="info-copy">{{place.description}} It is located within the University of Hong Kong campus and is a popular place for students to meet.</view>
+      <view class="tags"><text wx:for="{{place.tags}}" wx:key="*this">{{item}}</text></view>
+    </view>
+    <view class="actions"><button class="navigate" bindtap="navigate">Navigate</button><button bindtap="discuss">Place discussion</button><button bindtap="activity">Create activity</button></view>
+  </view>
 </view>

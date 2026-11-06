@@ -1,23 +1,38 @@
-<view class="map-page">
-  <view class="top row">
-    <view class="profile" bindtap="openProfile">🐬</view>
-    <view class="search grow"><input placeholder="Search places at HKU" bindinput="search" /></view>
-    <view class="privacy-icon" bindtap="openPrivacy">{{privacy.enabled ? '📍' : '🔒'}}</view>
-  </view>
-  <view class="campus-map">
-    <view class="campus-label">THE UNIVERSITY OF HONG KONG</view>
-    <view class="road road-a"></view><view class="road road-b"></view><view class="road road-c"></view>
-    <view wx:for="{{places}}" wx:key="id" class="place-pin" style="left:{{item.x}}%;top:{{item.y}}%" data-id="{{item.id}}" bindtap="openPlace">
-      <view class="pin">{{item.emoji}}</view><view class="pin-name">{{item.short}}</view>
-    </view>
-    <view wx:for="{{people}}" wx:key="id" class="person-pin" style="left:{{15 + index * 20}}%;top:{{28 + (index % 2) * 38}}%">{{item.avatar}}</view>
-  </view>
-  <view class="sheet">
-    <view class="row between"><view><view class="name">Around HKU</view><view class="muted">{{privacy.enabled ? 'Place-level sharing is active' : 'Your location is private'}}</view></view><view class="pill" bindtap="openPrivacy">Privacy</view></view>
-    <scroll-view scroll-x class="place-scroll">
-      <view wx:for="{{filtered}}" wx:key="id" class="mini-card" data-id="{{item.id}}" bindtap="openPlace">
-        <view class="mini-emoji">{{item.emoji}}</view><view class="name">{{item.short}}</view><view class="muted">{{item.people}} people · {{item.status}}</view>
-      </view>
-    </scroll-view>
-  </view>
+<view class="map-screen">
+  <map class="real-map" latitude="{{latitude}}" longitude="{{longitude}}" scale="{{scale}}" markers="{{markers}}" show-location="{{showLocation}}" enable-zoom enable-scroll enable-rotate bindmarkertap="markerTap" />
+  <cover-view class="left-tool" bindtap="openProfile">🐬</cover-view>
+  <cover-view class="right-tools">
+    <cover-view class="circle-tool" bindtap="openChats">💬</cover-view>
+    <cover-view class="circle-tool" bindtap="openPrivacy">🔒</cover-view>
+    <cover-view class="circle-tool small" bindtap="locate">⌖</cover-view>
+  </cover-view>
+
+  <cover-view class="place-card" wx:if="{{selectedPlace}}" bindtap="openSelected">
+    <cover-view class="grab"></cover-view>
+    <cover-view class="search-strip">⌕ Search　Map <cover-view class="dolphin-mini">🐬</cover-view></cover-view>
+    <cover-view class="place-row">
+      <cover-view class="place-copy">
+        <cover-view class="place-title">{{selectedPlace.name}}</cover-view>
+        <cover-view class="place-sub">THE UNIVERSITY OF HONG KONG</cover-view>
+        <cover-view class="distance">{{selectedPlace.distance}}</cover-view>
+      </cover-view>
+      <cover-view class="photo-box">{{selectedPlace.emoji}}</cover-view>
+    </cover-view>
+    <cover-view class="avatar-line" wx:if="{{selectedPlace.peopleList.length}}">
+      <cover-view class="avatar-caption">Here now</cover-view>
+      <cover-image wx:for="{{selectedPlace.peopleList}}" wx:key="id" class="mini-avatar" src="{{item.avatar}}" data-id="{{item.id}}" catchtap="openPerson" />
+      <cover-view class="people-total">+{{selectedPlace.people}}</cover-view>
+    </cover-view>
+    <cover-view class="card-actions">
+      <cover-view class="detail-button">View place</cover-view>
+      <cover-view class="navigate-button" catchtap="navigateSelected">Navigate</cover-view>
+    </cover-view>
+    <cover-view class="close" catchtap="closeCard">×</cover-view>
+  </cover-view>
+
+  <cover-view class="bottom-search" wx:else bindtap="search">
+    <cover-view class="grab"></cover-view>
+    <cover-view class="search-strip">⌕ Search HKU places <cover-view class="dolphin-mini">🐬</cover-view></cover-view>
+    <cover-view class="sharing-status">{{liveStatus}}</cover-view>
+  </cover-view>
 </view>

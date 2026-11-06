@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/welcome/index",
+    "pages/login/index",
     "pages/map/index",
     "pages/place-detail/index",
     "pages/chats/index",
@@ -19,15 +20,15 @@
     "pages/feedback/index"
   ],
   "window": {
-    "backgroundColor": "#F4F7FB",
+    "backgroundColor": "#FFFFFF",
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#1677FF",
+    "navigationBarBackgroundColor": "#FFFFFF",
     "navigationBarTitleText": "LinkUS",
-    "navigationBarTextStyle": "white"
+    "navigationBarTextStyle": "black"
   },
   "tabBar": {
-    "color": "#8B96A8",
-    "selectedColor": "#1677FF",
+    "color": "#8A8A8A",
+    "selectedColor": "#1F7DE7",
     "backgroundColor": "#FFFFFF",
     "borderStyle": "white",
     "list": [
@@ -40,10 +41,13 @@
   },
   "permission": {
     "scope.userLocation": {
-      "desc": "用于在香港大学校园地图中显示你附近的地点；位置共享默认关闭"
+      "desc": "用于在香港大学真实校园地图中显示当前位置；位置共享默认关闭"
     }
   },
   "requiredPrivateInfos": ["getLocation"],
+  "usingComponents": {
+    "linkus-header": "/components/linkus-header/index"
+  },
   "sitemapLocation": "sitemap.json",
   "style": "v2",
   "lazyCodeLoading": "requiredComponents"

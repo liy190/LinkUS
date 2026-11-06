@@ -46,7 +46,7 @@
   },
   "appid": "wxd4e38c2692b060a3",
   "projectname": "LinkUS",
-  "libVersion": "2.20.1",
+  "libVersion": "3.17.6",
   "cloudfunctionTemplateRoot": "cloudfunctionTemplate/",
   "condition": {
     "search": {

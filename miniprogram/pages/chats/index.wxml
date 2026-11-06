@@ -1,9 +1,12 @@
-<view class="page list-page">
-  <view class="hero"><view class="title">Stay connected</view><view class="subtitle">Direct messages, campus groups and place discussions.</view></view>
-  <view class="section-title">Messages</view>
-  <view class="list-wrap">
-    <view wx:for="{{list}}" wx:key="id" class="list-card row" data-id="{{item.id}}" data-title="{{item.title}}" bindtap="open">
-      <view class="avatar">{{item.avatar}}</view><view class="grow"><view class="row between"><view class="name">{{item.title}}</view><view class="badge" wx:if="{{item.unread}}">{{item.unread}}</view></view><view class="muted preview">{{item.preview}}</view></view>
+<view class="screen">
+  <linkus-header bind:add="add"/>
+  <view class="search">⌕ search</view>
+  <view class="list">
+    <view wx:for="{{list}}" wx:key="id" class="chat-row" data-id="{{item.id}}" data-title="{{item.title}}" data-avatar="{{item.avatar}}" bindtap="open">
+      <image class="avatar" src="{{item.avatar}}" mode="aspectFill"/>
+      <view class="grow"><view class="name">{{item.title}}</view><view class="preview">{{item.preview}}</view></view>
+      <view class="meta"><view class="time">{{index ? '22:20 09/05' : '10:25'}}</view><view class="badge" wx:if="{{item.unread}}">{{item.unread}}</view></view>
     </view>
   </view>
+  <view class="empty" wx:if="{{!loading && !list.length}}">No conversations yet. Tap + to meet another LinkUS user.</view>
 </view>

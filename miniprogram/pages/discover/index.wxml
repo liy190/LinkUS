@@ -1,9 +1,1 @@
-<view class="page">
-  <view class="hero"><view class="title">Discover HKU</view><view class="subtitle">People, activities and conversations across campus.</view></view>
-  <view class="grid">
-    <view class="tile blue" data-url="/pages/nearby/index" bindtap="open"><view class="icon">🧭</view><view class="name">Nearby</view><view class="muted">Meet students sharing a campus place</view></view>
-    <view class="tile purple" data-url="/pages/activities/index" bindtap="open"><view class="icon">🎯</view><view class="name">Activities</view><view class="muted">Join or create an HKU meetup</view></view>
-    <view class="tile green" data-url="/pages/feedback/index" bindtap="open"><view class="icon">💡</view><view class="name">Feedback</view><view class="muted">Help the team improve LinkUS</view></view>
-    <view class="tile orange"><view class="icon">✨</view><view class="name">Moments</view><view class="muted">Coming in the next iteration</view></view>
-  </view>
-</view>
+<view class="screen"><linkus-header bind:add="add"/><view class="discover-row" data-url="/pages/activities/index" bindtap="open"><text class="ico coral">◉</text><text>Moments</text><text class="arrow">›</text></view><view class="discover-row" data-url="/pages/nearby/index" bindtap="open"><text class="ico blue">♧</text><text>Nearby</text><text class="arrow">›</text></view><view class="discover-row" data-url="/pages/activities/index" bindtap="open"><text class="ico green">♪</text><text>Listen</text><text class="arrow">›</text></view><view class="discover-row" data-url="/pages/nearby/index" bindtap="open"><text class="ico black">⌕</text><text>Search</text><text class="arrow">›</text></view><view class="discover-row" data-url="/pages/feedback/index" bindtap="open"><text class="ico gold">◎</text><text>Live</text><text class="arrow">›</text></view></view>

@@ -1,1 +1,12 @@
-<view class="page"><view class="label">Display name</view><input class="field" value="{{form.nickname}}" data-key="nickname" bindinput="change"/><view class="label">Faculty</view><input class="field" value="{{form.faculty}}" data-key="faculty" bindinput="change"/><view class="label">Bio</view><textarea class="field area" value="{{form.bio}}" data-key="bio" bindinput="change"/><view class="card tip">Your phone number, birthday and email are not shown publicly by default.</view><button class="button" bindtap="save">Save profile</button></view>
+<view class="edit-page">
+  <view class="sheet-handle"></view><view class="sheet-title">My Profile</view>
+  <button class="avatar-button" open-type="chooseAvatar" bindchooseavatar="chooseAvatar">
+    <image class="avatar-edit" src="{{avatarPreview}}" mode="aspectFill"/><view class="camera">✎</view>
+  </button>
+  <view class="avatar-help">Use a WeChat avatar or choose another image</view>
+  <view class="form-row"><text>Display name</text><input type="nickname" placeholder="Choose your nickname" value="{{form.nickname}}" data-key="nickname" bindinput="change"/></view>
+  <view class="form-row"><text>Faculty</text><input placeholder="Optional" value="{{form.faculty}}" data-key="faculty" bindinput="change"/></view>
+  <view class="form-row"><text>Bio</text><input placeholder="Tell people about yourself" value="{{form.bio}}" data-key="bio" bindinput="change"/></view>
+  <view class="private-note">Your WeChat identity stays private. Other users see only the LinkUS profile you create here.</view>
+  <button class="save" loading="{{saving}}" disabled="{{saving}}" bindtap="save">Save Profile</button>
+</view>

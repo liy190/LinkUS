@@ -1,0 +1,15 @@
+<view class="login-page">
+  <view class="red-corner"></view><view class="blue-corner"></view>
+  <view class="login-content">
+    <view class="brand">LinkUS</view>
+    <view class="journey">Your Journey<br/><b>Begins Here</b></view>
+    <view class="intro">Connect with peers and discover<br/>new friendships across campus.</view>
+    <view class="login-card">
+      <view class="login-title">Continue with WeChat</view>
+      <view class="login-note">A private LinkUS ID will be created automatically. You choose what profile information to share.</view>
+      <button class="continue" loading="{{loading}}" disabled="{{loading}}" bindtap="continue">{{loading ? 'Signing in…' : 'WeChat sign in'}}</button>
+      <view class="privacy-note">No password required · Profile editable anytime</view>
+      <view class="error" wx:if="{{error}}">{{error}}</view>
+    </view>
+  </view>
+</view>

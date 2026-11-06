@@ -1,7 +1,1 @@
-.welcome { min-height: 100vh; box-sizing: border-box; padding: 190rpx 60rpx 70rpx; text-align: center; color: #fff; background: linear-gradient(160deg,#0868f5,#6ec5ff); }
-.logo { font-size: 150rpx; }
-.brand { font-size: 78rpx; font-weight: 900; letter-spacing: 4rpx; }
-.tagline { font-size: 32rpx; margin-top: 18rpx; }
-.campus { opacity: .76; margin-top: 12rpx; }
-.start { margin-top: 150rpx; background: #fff; color: #1677ff; border-radius: 999rpx; font-weight: 800; line-height: 96rpx; }
-.privacy { margin-top: 32rpx; font-size: 22rpx; opacity: .72; line-height: 1.5; }
+.welcome{height:100vh;position:relative;overflow:hidden;background:#18395d;color:#fff}.background,.shade{position:absolute;inset:0;width:100%;height:100%}.shade{background:linear-gradient(rgba(0,50,130,.05),rgba(0,35,80,.08) 45%,rgba(0,20,50,.52))}.brand{position:absolute;left:46rpx;right:36rpx;top:145rpx;color:#063cc8;font-size:108rpx;font-weight:900;font-style:italic;letter-spacing:-7rpx;text-shadow:0 4rpx 4rpx rgba(0,0,120,.18)}.copy{position:absolute;left:54rpx;right:54rpx;bottom:74rpx}.together{font-size:30rpx}.headline{font-size:58rpx;line-height:1.03;font-weight:400;letter-spacing:1rpx}.explore{margin-top:48rpx;background:#1976ef;color:#fff;border:0;border-radius:7rpx;line-height:82rpx;font-size:25rpx;font-weight:600}.explore::after{border:0}
