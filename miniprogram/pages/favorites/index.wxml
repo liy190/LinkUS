@@ -1,0 +1,8 @@
+<view class="page">
+  <view class="card row fav-row" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="open">
+    <view class="emoji">{{item.emoji}}</view>
+    <view class="grow"><view class="name">{{item.name}}</view><view class="muted">{{item.status}}</view></view>
+    <text class="remove" catchtap="remove" data-id="{{item.id}}">Remove</text>
+  </view>
+  <view class="empty" wx:if="{{!loading && !list.length}}">No saved places yet. Tap ☆ on a place to save it.</view>
+</view>

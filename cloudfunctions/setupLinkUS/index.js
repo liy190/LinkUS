@@ -12,6 +12,12 @@ const COLLECTIONS = [
   'notifications',
   'feedback',
   'sharedLocations',
+  'follows',
+  'posts',
+  'placeStatuses',
+  'favorites',
+  'reports',
+  'blocks',
 ];
 
 async function createCollections() {
@@ -64,9 +70,10 @@ async function seedActivities() {
   return seeds.length;
 }
 
+// 初始化函数：只建集合 + 播种演示数据，全部幂等（集合已存在就跳过、有数据就不再播种）。
+// 不再要求微信身份，这样可以直接在云开发控制台的「云端测试」里运行；
+// 因为它不写用户数据，重复运行也不会造成副作用。
 exports.main = async () => {
-  const { OPENID } = cloud.getWXContext();
-  if (!OPENID) return { ok: false, error: 'NO_WECHAT_IDENTITY' };
   try {
     const collections = await createCollections();
     const groups = await seedGroups();

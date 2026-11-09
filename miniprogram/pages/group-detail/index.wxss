@@ -1,1 +1,9 @@
 .center{text-align:center}.big{font-size:110rpx}.first{margin-top:0}.secondary{margin-top:20rpx}
+
+/* --- local demo polish: member roster --- */
+.member-row{display:flex;align-items:center;padding:12rpx 0}
+.member-avatar{width:56rpx;height:56rpx;border-radius:50%;background:#e7eef8;margin-right:18rpx}
+.member-more{color:#9a9bb1;font-size:21rpx;padding-top:10rpx}
+
+/* --- 群公告 --- */
+.edit-announcement{color:#1f7de7;font-size:22rpx;margin-top:12rpx}

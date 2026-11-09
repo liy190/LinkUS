@@ -1,1 +1,7 @@
 .center{text-align:center}.big{font-size:110rpx}
+
+/* --- 发起者 / 参与者 --- */
+.creator-card{display:flex;align-items:center}
+.member-row{display:flex;align-items:center;padding:12rpx 0;gap:14rpx}
+.member-avatar{width:56rpx;height:56rpx;border-radius:50%;background:#e7eef8}
+.danger-link{text-align:center;color:#c0332e;font-size:23rpx;padding:28rpx 0 10rpx}

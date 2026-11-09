@@ -2,21 +2,43 @@
   <view class="profile-nav">
     <view class="nav-circle back" bindtap="back">←</view>
     <image class="wordmark" src="/images/figma/linkus-wordmark.png" mode="aspectFit"/>
-    <view class="message">•••</view>
+    <view class="message" data-url="/pages/settings/index" bindtap="go">⚙</view>
   </view>
   <view class="identity">
-    <view class="big-avatar"><image src="{{profile.avatar}}" mode="aspectFill"/><view class="edit-dot" data-url="/pages/profile-edit/index" bindtap="go">✎</view></view>
+    <view class="big-avatar">
+      <image src="{{profile.avatar}}" mode="aspectFill"/>
+      <view class="edit-dot" bindtap="chooseAvatar">{{uploading ? '…' : '✎'}}</view>
+    </view>
     <view class="identity-copy">
-      <view class="profile-name">{{profile.nickname}}</view><view class="handle">{{profile.handle}}</view>
-      <view class="stats"><text>Following</text><text class="stat-count">876</text><text>Followers</text><text class="stat-count">66</text></view>
+      <view class="profile-name">{{profile.nickname}}</view>
+      <view class="handle">{{profile.handle}}</view>
+      <view class="identity-meta" wx:if="{{profile.faculty}}">{{profile.faculty}}</view>
+      <view class="interests" wx:if="{{profile.interests.length}}">
+        <text class="interest" wx:for="{{profile.interests}}" wx:key="*this">{{item}}</text>
+      </view>
     </view>
   </view>
-  <button class="edit-button" data-url="/pages/profile-edit/index" bindtap="go">Edit profile</button>
-  <view class="profile-tabs"><view class="selected">☷</view><view>♡</view></view>
-  <view class="post-card">
-    <view class="post-head"><image class="small-avatar" src="{{profile.avatar}}" mode="aspectFill"/><view><view class="name">{{profile.nickname}}</view><view class="handle">{{profile.handle}}</view></view><view class="dots">•••</view></view>
-    <view class="post-photo"><view class="sky"></view><view class="parachute">⌁</view><view class="building"></view></view>
-    <view class="post-actions"><text>♡ 20</text><text>▢ 6</text><text>⌁</text><text class="ago">35 min ago</text></view><view class="caption">Parachuting</view>
+
+  <view class="stats">
+    <view class="stat" data-url="/pages/follow-list/index?type=following" bindtap="go">
+      <view class="stat-num">{{stats.following}}</view><view class="muted">Following</view>
+    </view>
+    <view class="stat" data-url="/pages/follow-list/index?type=followers" bindtap="go">
+      <view class="stat-num">{{stats.followers}}</view><view class="muted">Followers</view>
+    </view>
   </view>
-  <view class="profile-links"><view data-url="/pages/privacy/index" bindtap="go">Location privacy <text>›</text></view><view data-url="/pages/feedback/index" bindtap="go">Feedback <text>›</text></view></view>
+
+  <button class="edit-button" data-url="/pages/profile-edit/index" bindtap="go">Edit profile</button>
+
+  <view class="profile-tabs">
+    <view class="tab" data-url="/pages/moments/index?scope=mine" bindtap="go">☷ My moments</view>
+    <view class="tab" data-url="/pages/moments/index?scope=liked" bindtap="go">♡ Liked</view>
+  </view>
+
+  <view class="profile-links">
+    <view data-url="/pages/privacy/index" bindtap="go">Location privacy <text>›</text></view>
+    <view data-url="/pages/settings/index" bindtap="go">Settings <text>›</text></view>
+    <view data-url="/pages/favorites/index" bindtap="go">Saved places <text>›</text></view>
+    <view data-url="/pages/feedback/index" bindtap="go">Feedback <text>›</text></view>
+  </view>
 </view>

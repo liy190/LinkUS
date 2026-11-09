@@ -8,7 +8,7 @@ Page({
     const enabled = e.detail.value;
     const privacy = store.savePrivacy({ enabled });
     this.setData({ privacy });
-    if (!enabled) locationApi.revoke().catch(() => {});
+    if (!enabled) locationApi.revoke().catch((error) => console.warn('revoke failed', error));
   },
   duration(e) { const duration = this.data.durations[Number(e.detail.value)]; const privacy = store.savePrivacy({ duration }); this.setData({ privacy, durationIndex: Number(e.detail.value) }); },
   scope(e) { const privacy = store.savePrivacy({ scope: e.detail.value }); this.setData({ privacy }); },
@@ -19,7 +19,7 @@ Page({
     this.setData({ privacy });
     if (!privacy.enabled) return;
     if (!mutualDistance) {
-      locationApi.disableDistanceConsent().catch(() => {});
+      locationApi.disableDistanceConsent().catch((error) => console.warn('disableDistanceConsent failed', error));
       wx.showToast({ title: 'Exact distance disabled', icon: 'none' });
       return;
     }
@@ -35,7 +35,7 @@ Page({
   revoke() {
     const privacy = store.savePrivacy({ enabled: false });
     this.setData({ privacy });
-    locationApi.revoke().catch(() => {});
+    locationApi.revoke().catch((error) => console.warn('revoke failed', error));
     wx.showToast({ title: 'Sharing stopped' });
   },
 });

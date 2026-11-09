@@ -1,1 +1,13 @@
 .screen{min-height:100vh;background:#fff}.search{height:64rpx;margin:12rpx 16rpx;border-radius:20rpx;background:#fff;color:#111;font-size:28rpx;display:flex;align-items:center;justify-content:center;gap:7rpx;box-shadow:0 0 0 12rpx #ededed}.search image{width:28rpx;height:28rpx;opacity:.55}.search text{opacity:.5}.notice-list{padding:12rpx 0}.notice-row{display:flex;align-items:flex-start;min-height:84rpx;padding:16rpx 44rpx}.notice-icon{position:relative;width:84rpx;height:84rpx;margin-right:28rpx;flex-shrink:0;display:flex;align-items:center;justify-content:center}.icon-shape{width:46rpx;height:46rpx;border:5rpx solid #343434;border-radius:50%;box-sizing:border-box}.kind-1 .icon-shape{border-radius:8rpx;border-color:#1d6c38}.kind-2 .icon-shape{border-radius:4rpx;border-color:#343434;box-shadow:inset 0 -12rpx #fff}.kind-3 .icon-shape{border-radius:8rpx;border-color:#343434}.name{font-size:28rpx;color:#2c2d3a}.preview{max-width:410rpx;color:#9a9bb1;font-size:21rpx;font-weight:600;margin-top:12rpx;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.meta{margin-left:auto;align-self:stretch;display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between}.time{color:#686a8a;font-size:20rpx;font-weight:600}.badge{border-radius:8rpx;background:#40c4ff}.empty{padding:100rpx 60rpx;text-align:center;color:#8b96a7}.tab-safe{height:160rpx}
+
+/* --- local demo polish: search field --- */
+.search{justify-content:flex-start;gap:10rpx}
+.search-input{flex:1;height:64rpx;font-size:26rpx;color:#111}
+.search-placeholder{color:#a6a6a6}
+.search-clear{width:40rpx;text-align:center;color:#9a9bb1;font-size:32rpx;line-height:1}
+
+/* --- local demo polish: read state + mark all --- */
+.notice-actions{display:flex;align-items:center;justify-content:space-between;padding:0 44rpx 12rpx;font-size:20rpx;color:#8b96a7}
+.notice-markall{color:#1f7de7;font-weight:700}
+.notice-row.is-read .name{color:#8b96a7;font-weight:400}
+.dot{width:14rpx;height:14rpx;border-radius:50%;background:#40c4ff;margin-top:6rpx}

@@ -1,0 +1,9 @@
+<view class="page">
+  <view class="card row user-row" wx:for="{{list}}" wx:key="userId" data-id="{{item.userId}}" bindtap="open">
+    <image class="avatar" src="{{item.avatar}}" mode="aspectFill"/>
+    <view class="grow"><view class="name">{{item.nickname}}</view><view class="muted">{{item.handle}}</view></view>
+    <text class="chevron">›</text>
+  </view>
+  <view class="empty" wx:if="{{!loading && !list.length}}">No {{type}} yet.</view>
+  <view class="empty" wx:if="{{loading}}">Loading…</view>
+</view>

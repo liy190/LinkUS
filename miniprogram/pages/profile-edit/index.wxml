@@ -2,9 +2,24 @@
   <view class="edit-nav"><view class="cancel-link" bindtap="cancel">Cancel</view><view class="sheet-title">Edit Profile</view><view class="nav-spacer"></view></view>
   <button class="avatar-button" open-type="chooseAvatar" bindchooseavatar="chooseAvatar"><image class="avatar-edit" src="{{avatarPreview}}" mode="aspectFill"/><view class="camera">✎</view></button>
   <view class="avatar-help">Use a WeChat avatar or choose another image</view>
-  <view class="field-group"><view class="field-label">Name</view><input class="design-field" type="nickname" placeholder="Choose your nickname" value="{{form.nickname}}" data-key="nickname" bindinput="change"/></view>
-  <view class="field-group"><view class="field-label">Faculty</view><input class="design-field" placeholder="Optional" value="{{form.faculty}}" data-key="faculty" bindinput="change"/></view>
-  <view class="field-group"><view class="field-label">Bio</view><textarea class="design-field bio-field" placeholder="Tell people about yourself" value="{{form.bio}}" data-key="bio" bindinput="change" maxlength="240"/></view>
+  <view class="field-group">
+    <view class="field-label">Name</view>
+    <input class="design-field" type="nickname" placeholder="Choose your nickname" value="{{form.nickname}}" data-key="nickname" bindinput="change" cursor-spacing="24"/>
+  </view>
+  <view class="field-group">
+    <view class="field-label">Handle</view>
+    <view class="handle-row"><text class="at">@</text><input class="design-field handle-input" placeholder="your_name" value="{{handleInput}}" bindinput="onHandleInput" maxlength="20" cursor-spacing="24"/></view>
+    <view class="field-error" wx:if="{{handleError}}">{{handleError}}</view>
+    <view class="field-hint-line">3-20 letters, numbers or underscores. Shown on your profile.</view>
+  </view>
+  <view class="field-group"><view class="field-label">Faculty</view><input class="design-field" placeholder="Optional" value="{{form.faculty}}" data-key="faculty" bindinput="change" cursor-spacing="24"/></view>
+  <view class="field-group"><view class="field-label">Bio</view><textarea class="design-field bio-field" placeholder="Tell people about yourself" value="{{form.bio}}" data-key="bio" bindinput="change" maxlength="240" cursor-spacing="24"/></view>
+  <view class="field-group">
+    <view class="field-label">Interests <text class="field-hint">{{interests.length}} selected</text></view>
+    <view class="chip-wrap">
+      <view wx:for="{{interestOptions}}" wx:key="*this" class="chip {{interests.indexOf(item) >= 0 ? 'chip-on' : ''}}" data-value="{{item}}" bindtap="toggleInterest">{{item}}</view>
+    </view>
+  </view>
   <view class="private-note">Your WeChat identity stays private. Other users see only the LinkUS profile you create here.</view>
   <view class="form-actions"><button class="cancel-button" bindtap="cancel">Cancel</button><button class="save" loading="{{saving}}" disabled="{{saving}}" bindtap="save">Save</button></view>
 </view>

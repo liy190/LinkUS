@@ -1,13 +1,11 @@
 const mock = require('../data/mock');
 
+// 只保存"用户自己的偏好"和"当前登录用户的缓存"。
+// 业务数据（动态、关注、消息、活动…）一律以云端为准，不在本地做副本。
 const KEYS = {
   profile: 'linkus.profile',
   privacy: 'linkus.privacy',
-  messages: 'linkus.messages',
-  groups: 'linkus.groups',
-  activities: 'linkus.activities',
-  notifications: 'linkus.notifications',
-  feedback: 'linkus.feedback',
+  settings: 'linkus.settings',
 };
 
 function read(key, fallback) {
@@ -20,35 +18,29 @@ function write(key, value) {
   return value;
 }
 
-function getProfile() { return read(KEYS.profile, mock.currentUser); }
+// 登录后才有内容；未登录返回空对象，不再用演示用户冒充
+function getProfile() { return read(KEYS.profile, {}); }
 function saveProfile(patch) { return write(KEYS.profile, { ...getProfile(), ...patch }); }
+
 function getPrivacy() { return read(KEYS.privacy, mock.privacy); }
 function savePrivacy(patch) { return write(KEYS.privacy, { ...getPrivacy(), ...patch }); }
-function getMessages() { return read(KEYS.messages, mock.messages); }
-function saveMessages(value) { return write(KEYS.messages, value); }
-function getGroups() { return read(KEYS.groups, mock.groups); }
-function saveGroups(value) { return write(KEYS.groups, value); }
-function getActivities() { return read(KEYS.activities, mock.activities); }
-function saveActivities(value) { return write(KEYS.activities, value); }
-function getNotifications() { return read(KEYS.notifications, mock.notifications); }
-function saveNotifications(value) { return write(KEYS.notifications, value); }
-function addFeedback(item) {
-  const list = read(KEYS.feedback, []);
-  return write(KEYS.feedback, [{ ...item, id: `feedback-${Date.now()}` }, ...list]);
+
+function getSettings() { return read(KEYS.settings, mock.settings); }
+function saveSettings(patch) { return write(KEYS.settings, { ...getSettings(), ...patch }); }
+
+function clearUserData() {
+  Object.values(KEYS).forEach((key) => {
+    try { wx.removeStorageSync(key); } catch (error) { console.warn('clear storage failed', key, error); }
+  });
 }
 
 module.exports = {
+  KEYS,
   getProfile,
   saveProfile,
   getPrivacy,
   savePrivacy,
-  getMessages,
-  saveMessages,
-  getGroups,
-  saveGroups,
-  getActivities,
-  saveActivities,
-  getNotifications,
-  saveNotifications,
-  addFeedback,
+  getSettings,
+  saveSettings,
+  clearUserData,
 };

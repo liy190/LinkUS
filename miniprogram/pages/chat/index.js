@@ -1,5 +1,6 @@
 const api = require('../../services/api');
 const store = require('../../services/store');
+const time = require('../../utils/time');
 
 Page({
   data: {
@@ -8,6 +9,12 @@ Page({
     avatar: '/images/avatars/george.svg',
     currentAvatar: '/images/avatars/saber.svg',
     list: [],
+    hasMore: false,
+    limit: 20,
+    dateLabel: '',
+    loading: true,
+    partnerReadAt: 0,
+    userId: '',
     text: '',
     sending: false,
     attachmentsOpen: false,
@@ -16,6 +23,7 @@ Page({
   },
   onLoad(options) {
     const id = options.id || 'dm-george';
+    this.userId = options.uid ? decodeURIComponent(options.uid) : '';
     const title = decodeURIComponent(options.title || 'Conversation');
     const avatar = options.avatar ? decodeURIComponent(options.avatar) : '/images/avatars/george.svg';
     const profile = store.getProfile();
@@ -28,9 +36,11 @@ Page({
       id,
       title,
       avatar,
+      userId: this.userId,
       currentAvatar: profile.avatarFileId || profile.avatar || '/images/avatars/saber.svg',
       navHeight: statusBarHeight + navigationHeight,
       navTopPadding: statusBarHeight + menuGap,
+      dateLabel: time.formatChatDate(Date.now()),
     });
     wx.setNavigationBarTitle({ title });
     this.load();
@@ -40,16 +50,53 @@ Page({
   onHide() { this.stopRealtime(); },
   onShow() { if (this.data.id && !this.watcher && !this.pollTimer) this.startRealtime(); },
   load() {
-    return api.getMessages(this.data.id).then((list) => this.setData({ list })).catch(() => wx.showToast({ title: 'Unable to load messages', icon: 'none' }));
+    return Promise.all([
+      api.getMessages(this.data.id),
+      api.getReadState(this.data.id).catch(() => ({ partnerReadAt: 0 })),
+    ])
+      .then(([list, readState]) => {
+        this.all = list;
+        this.setData({ partnerReadAt: Number(readState.partnerReadAt || 0) });
+        this.renderMessages();
+      })
+      .catch((error) => {
+        console.warn('getMessages failed', error);
+        wx.showToast({ title: error.message || 'Unable to load messages', icon: 'none' });
+      });
+  },
+  // Only the newest `limit` messages are rendered; earlier ones load on demand so
+  // a long history does not push the newest message off screen.
+  renderMessages() {
+    const all = this.all || [];
+    const limit = this.data.limit;
+    const partnerReadAt = this.data.partnerReadAt;
+    const list = all.slice(Math.max(0, all.length - limit)).map((item) => ({
+      ...item,
+      // 只有对方读过（lastReadAt >= 消息时间）才显示双勾，本地模式恒为单勾
+      read: item.from === 'me' && Boolean(partnerReadAt) && Number(item.createdAt || 0) <= partnerReadAt,
+    }));
+    this.setData({
+      list,
+      hasMore: all.length > limit,
+      loading: false,
+      dateLabel: time.formatChatDate(all.length && all[0].createdAt ? all[0].createdAt : Date.now()),
+    });
+  },
+  loadEarlier() {
+    if (!this.data.hasMore) return;
+    this.setData({ limit: this.data.limit + 20 }, () => this.renderMessages());
   },
   startRealtime() {
-    this.watcher = api.watchMessages(this.data.id, (list) => this.setData({ list }), () => this.startPolling());
+    this.watcher = api.watchMessages(this.data.id, (list) => {
+      this.all = list;
+      this.renderMessages();
+    }, () => this.startPolling());
     if (!this.watcher) this.startPolling();
   },
   startPolling() {
     if (this.pollTimer) return;
     if (this.watcher) { this.watcher.close(); this.watcher = null; }
-    this.pollTimer = setInterval(() => this.load(), 3000);
+    this.pollTimer = setInterval(() => this.load(), 1500);
   },
   stopRealtime() {
     if (this.watcher) { this.watcher.close(); this.watcher = null; }
@@ -69,7 +116,48 @@ Page({
   toggleAttachments() { this.setData({ attachmentsOpen: !this.data.attachmentsOpen }); },
   action(e) {
     this.setData({ attachmentsOpen: false });
-    wx.showToast({ title: `${e.currentTarget.dataset.name} coming next`, icon: 'none' });
+    wx.showToast({ title: `${e.currentTarget.dataset.name} is not available in the local build`, icon: 'none' });
+  },
+  // 长按自己的消息：2 分钟内可撤回；任何消息都可举报
+  longPress(e) {
+    const id = e.currentTarget.dataset.id;
+    const item = (this.all || []).find((message) => message.id === id);
+    if (!item) return;
+    const canRecall = item.from === 'me' && !item.recalled && Date.now() - Number(item.createdAt || 0) <= 2 * 60 * 1000;
+    const options = canRecall ? ['Recall message', 'Report message'] : ['Report message'];
+    wx.showActionSheet({
+      itemList: options,
+      success: ({ tapIndex }) => {
+        const picked = options[tapIndex];
+        if (picked === 'Recall message') {
+          api.recallMessage(this.data.id, id)
+            .then(() => wx.showToast({ title: 'Message recalled' }))
+            .catch((error) => wx.showToast({ title: error.message || 'Recall failed', icon: 'none' }))
+            .finally(() => this.load());
+          return;
+        }
+        wx.showModal({
+          title: 'Report this message?',
+          content: 'Our team reviews reports before acting.',
+          success: ({ confirm }) => {
+            if (!confirm) return;
+            api.report({ targetType: 'message', targetId: id, reason: 'Reported from chat' })
+              .then(() => wx.showToast({ title: 'Report sent' }))
+              .catch(() => wx.showToast({ title: 'Report failed', icon: 'none' }));
+          },
+        });
+      },
+    });
+  },
+  // 会话顶部的联系人区域 → 打开对方主页
+  openContact() {
+    if (!this.userId) {
+      wx.showToast({ title: 'Profile is not available for this chat', icon: 'none' });
+      return;
+    }
+    wx.navigateTo({
+      url: `/pages/user/index?id=${this.userId}&name=${encodeURIComponent(this.data.title || '')}&avatar=${encodeURIComponent(this.data.avatar || '')}`,
+    });
   },
   back() { wx.navigateBack(); },
 });

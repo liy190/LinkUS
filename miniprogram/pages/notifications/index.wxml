@@ -1,13 +1,22 @@
 <view class="screen">
-  <linkus-header bind:add="add"/>
-  <view class="search"><image src="/images/figma/search.svg" mode="aspectFit"/><text>search</text></view>
+  <linkus-header showAdd="{{false}}"/>
+  <view class="search">
+    <image src="/images/figma/search.svg" mode="aspectFit"/>
+    <input class="search-input" value="{{keyword}}" placeholder="Search notifications" placeholder-class="search-placeholder" confirm-type="search" bindinput="search"/>
+    <text class="search-clear" wx:if="{{keyword}}" bindtap="clearSearch">×</text>
+  </view>
+  <view class="notice-actions" wx:if="{{unreadCount}}">
+    <text class="notice-count">{{unreadCount}} unread</text>
+    <text class="notice-markall" bindtap="readAll">Mark all read</text>
+  </view>
   <view class="notice-list">
-    <view wx:for="{{list}}" wx:key="id" class="notice-row" data-id="{{item.id}}" bindtap="open">
+    <view wx:for="{{visible}}" wx:key="id" class="notice-row {{item.unread ? '' : 'is-read'}}" data-id="{{item.id}}" bindtap="open">
       <view class="notice-icon kind-{{item.iconKind}}"><view class="icon-shape"></view></view>
       <view class="grow"><view class="name">{{item.title}}</view><view class="preview">{{item.body}}</view></view>
-      <view class="meta"><view class="time">{{index ? '9:45 07/13' : '12:20 07/13'}}</view><view class="badge" wx:if="{{item.unread}}">{{index + 1}}</view></view>
+      <view class="meta"><view class="time">{{item.time}}</view><view class="dot" wx:if="{{item.unread}}"></view></view>
     </view>
   </view>
-  <view class="empty" wx:if="{{!loading && !list.length}}">You are all caught up.</view>
+  <view class="empty" wx:if="{{!loading && !visible.length && keyword}}">No notifications match your search.</view>
+  <view class="empty" wx:if="{{!loading && !visible.length && !keyword}}">You are all caught up.</view>
   <view class="tab-safe"></view>
 </view>

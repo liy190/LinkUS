@@ -51,7 +51,8 @@ Page({
 
   refreshMap(sharedUsers = this.sharedUsers || []) {
     const livePeople = sharedUsers.map(locationApi.normalizeSharedUser);
-    const peopleSource = this.liveConfigured ? livePeople : mock.people;
+    // 不再用演示人物凑数：没人共享位置地图上就只有地点
+    const peopleSource = livePeople;
     const places = mock.places.map((place) => presentPlace(place, this.data.currentLocation, peopleSource));
     const placeMarkers = places.map((place, index) => ({
       id: index + 1,
@@ -114,12 +115,12 @@ Page({
     }
     if (id >= 1000) {
       const person = locationApi.normalizeSharedUser(this.sharedUsers[id - 1000], id - 1000);
-      wx.showModal({
-        title: person.name,
-        content: person.distanceLabel || 'This user is sharing a campus place.',
-        confirmText: 'Message',
-        cancelText: 'Close',
-        success: ({ confirm }) => { if (confirm) this.startChat(person); },
+      wx.showActionSheet({
+        itemList: ['View profile', 'Message'],
+        success: ({ tapIndex }) => {
+          if (tapIndex === 0) this.openUserProfile(person);
+          else this.startChat(person);
+        },
       });
     }
   },
@@ -142,15 +143,24 @@ Page({
   },
 
   openPerson(e) {
-    const people = this.data.selectedPlace ? this.data.selectedPlace.peopleList : mock.people;
+    const people = this.data.selectedPlace ? this.data.selectedPlace.peopleList : [];
     const person = people.find((item) => item.id === e.currentTarget.dataset.id);
     if (!person) return;
     this.startChat(person);
   },
 
+  openUserProfile(person) {
+    const userId = person.userId || person.id;
+    if (!userId) return;
+    wx.navigateTo({
+      url: `/pages/user/index?id=${userId}&name=${encodeURIComponent(person.name || '')}&avatar=${encodeURIComponent(person.avatar || '')}`,
+    });
+  },
+
   startChat(person) {
-    api.createDirectConversation(person.userId || person.id).then((conversation) => {
-      wx.navigateTo({ url: `/pages/chat/index?id=${conversation.id}&title=${encodeURIComponent(conversation.title || person.name)}&avatar=${encodeURIComponent(conversation.avatar || person.avatar || '')}` });
+    const userId = person.userId || person.id;
+    api.createDirectConversation(userId).then((conversation) => {
+      wx.navigateTo({ url: `/pages/chat/index?id=${conversation.id}&uid=${userId}&title=${encodeURIComponent(conversation.title || person.name)}&avatar=${encodeURIComponent(conversation.avatar || person.avatar || '')}` });
     }).catch(() => wx.showToast({ title: 'Unable to start chat', icon: 'none' }));
   },
 
@@ -195,7 +205,7 @@ Page({
         this.refreshSharedUsers();
       }
     }).catch(() => {
-      if (showFailure !== false) wx.showToast({ title: 'Please enable location permission', icon: 'none' });
+      if (showFailure !== false) locationApi.promptPermission();
     });
   },
 });

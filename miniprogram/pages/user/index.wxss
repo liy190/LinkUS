@@ -1,0 +1,13 @@
+.profile-head{display:flex;flex-direction:column;align-items:center;text-align:center;padding:36rpx 24rpx}
+.big-avatar{width:150rpx;height:150rpx;border-radius:50%;background:#e7eef8;margin-bottom:18rpx}
+.profile-name{font-size:34rpx;font-weight:700;color:#111}
+.handle{color:#8a96a8;font-size:22rpx;margin-top:6rpx}
+.identity-meta{color:#8a96a8;font-size:21rpx;margin-top:10rpx}
+.stats{display:flex;justify-content:space-around;text-align:center}
+.stat-num{font-size:34rpx;font-weight:700;color:#111}
+.actions{display:flex;gap:20rpx;margin:20rpx 0}
+.actions button{flex:1}
+
+/* --- 降级提示 --- */
+.notice{background:#fff8e6;border-color:#f3e2b8;color:#8a6d1f;font-size:21rpx;line-height:1.6}
+.mono{font-family:Consolas, Menlo, monospace}

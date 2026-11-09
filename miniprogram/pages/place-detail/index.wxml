@@ -11,6 +11,16 @@
         <view class="distance" bindtap="measure">{{place.distance}}</view>
       </view>
       <view class="thumb">{{place.emoji}}</view>
+      <view class="star {{favorite ? 'star-on' : ''}}" bindtap="toggleFavorite">{{favorite ? '★' : '☆'}}</view>
+    </view>
+
+    <view class="status-block">
+      <view class="section-heading"><text>Live status</text><text class="demo-label" bindtap="reportStatus">Report status</text></view>
+      <view class="status-latest" wx:if="{{statuses.length}}">
+        <text class="status-name">{{statuses[0].status}}</text>
+        <text class="muted">{{statuses[0].authorName}} · {{statuses[0].time}}</text>
+      </view>
+      <view class="muted" wx:else>No one has reported the status yet. Be the first.</view>
     </view>
 
     <view class="people-section">
