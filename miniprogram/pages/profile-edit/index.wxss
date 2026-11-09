@@ -1,1 +1,14 @@
 .edit-page{min-height:100vh;padding:84rpx 46rpx calc(46rpx + env(safe-area-inset-bottom));box-sizing:border-box;background:#fff}.edit-nav{height:80rpx;display:flex;align-items:center;justify-content:space-between}.sheet-title{text-align:center;font-size:34rpx;font-weight:700;color:#292929}.cancel-link,.nav-spacer{width:100rpx;color:#3ab2e8;font-size:23rpx}.nav-spacer{visibility:hidden}.avatar-button{position:relative;width:156rpx;height:156rpx;padding:0;margin:10rpx auto 0;border-radius:50%;background:transparent;overflow:visible}.avatar-button::after{border:0}.avatar-edit{width:150rpx;height:150rpx;border-radius:50%;background:#dff4ff;border:3rpx solid #d8e4f2}.camera{position:absolute;right:0;top:4rpx;width:42rpx;height:42rpx;border-radius:50%;background:#40c4ff;color:#fff;font-size:23rpx;display:flex;align-items:center;justify-content:center}.avatar-help{text-align:center;color:#8a96a8;font-size:19rpx;margin:14rpx 0 28rpx}.field-group{margin-bottom:24rpx}.field-label{font-size:23rpx;color:#686a8a;margin-bottom:12rpx}.design-field{width:100%;height:104rpx;padding:0 28rpx;border:2rpx solid #d0d1db;border-radius:20rpx;box-sizing:border-box;background:#fff;color:#2c2d3a;font-size:26rpx}.bio-field{height:150rpx;padding-top:24rpx}.private-note{margin:26rpx 0;color:#8a96a8;font-size:21rpx;line-height:1.5}.form-actions{display:flex;gap:32rpx;margin-top:32rpx}.form-actions button{flex:1;border:0;border-radius:20rpx;line-height:96rpx;font-size:26rpx}.form-actions button::after{border:0}.cancel-button{background:#ecf9ff;color:#3ab2e8}.save{background:linear-gradient(135deg,#40c4ff,#03a9f4);color:#fff;font-weight:700;box-shadow:0 8rpx 18rpx rgba(3,169,244,.18)}.save[disabled]{opacity:.65}
+
+/* --- local demo polish: interests --- */
+.field-hint{color:#a3adbb;font-size:19rpx;margin-left:10rpx}
+.chip-wrap{display:flex;flex-wrap:wrap;gap:14rpx}
+.chip{padding:12rpx 24rpx;border-radius:999rpx;border:2rpx solid #d7e3f2;background:#fff;color:#3d4a5c;font-size:23rpx}
+.chip-on{border-color:#1f7de7;background:#e9f2ff;color:#1f7de7;font-weight:700}
+
+/* --- handle 输入 --- */
+.handle-row{display:flex;align-items:center;gap:8rpx}
+.at{color:#8a96a8;font-size:28rpx;padding-left:6rpx}
+.handle-input{flex:1}
+.field-error{color:#c0332e;font-size:20rpx;margin-top:-12rpx}
+.field-hint-line{color:#a3adbb;font-size:19rpx;margin-top:8rpx}

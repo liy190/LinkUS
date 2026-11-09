@@ -1,1 +1,16 @@
-<view class="page"><view class="label">Activity title *</view><input class="field" placeholder="e.g. Study together" value="{{title}}" data-key="title" bindinput="change"/><view class="label">HKU place *</view><input class="field" placeholder="e.g. Chi Wah Learning Commons" value="{{place}}" data-key="place" bindinput="change"/><view class="label">Time *</view><input class="field" placeholder="e.g. Friday 16:00" value="{{time}}" data-key="time" bindinput="change"/><view class="label">Capacity</view><input class="field" type="number" placeholder="6" value="{{capacity}}" data-key="capacity" bindinput="change"/><view class="label">Description</view><textarea class="field area" placeholder="What should people know?" value="{{description}}" data-key="description" bindinput="change"/><button class="button" loading="{{saving}}" disabled="{{saving}}" bindtap="submit">Create activity</button></view>
+<scroll-view scroll-y class="form-scroll">
+  <view class="page">
+    <view class="label">Activity title *</view>
+    <input class="field" placeholder="e.g. Study together" value="{{title}}" data-key="title" bindinput="change" cursor-spacing="24"/>
+    <view class="label">HKU place *</view>
+    <input class="field" placeholder="e.g. Chi Wah Learning Commons" value="{{place}}" data-key="place" bindinput="change" cursor-spacing="24"/>
+    <view class="label">Time *</view>
+    <input class="field" placeholder="e.g. Friday 16:00" value="{{time}}" data-key="time" bindinput="change" cursor-spacing="24"/>
+    <view class="label">Capacity</view>
+    <input class="field" type="number" placeholder="6" value="{{capacity}}" data-key="capacity" bindinput="change" cursor-spacing="24"/>
+    <view class="label">Description</view>
+    <textarea class="field area" placeholder="What should people know?" value="{{description}}" data-key="description" bindinput="change" maxlength="400" cursor-spacing="24"/>
+    <button class="button" loading="{{saving}}" disabled="{{saving}}" bindtap="submit">{{editing ? 'Save changes' : 'Create activity'}}</button>
+    <view class="form-hint">The host can edit or cancel the activity later. Everyone who joins gets a notification.</view>
+  </view>
+</scroll-view>

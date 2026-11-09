@@ -1,15 +1,23 @@
 <view class="screen">
   <linkus-header bind:add="add"/>
-  <view class="search"><image src="/images/figma/search.svg" mode="aspectFit"/><text>search</text></view>
+  <view class="search">
+    <image src="/images/figma/search.svg" mode="aspectFit"/>
+    <input class="search-input" value="{{keyword}}" placeholder="Search groups" placeholder-class="search-placeholder" confirm-type="search" bindinput="search"/>
+    <text class="search-clear" wx:if="{{keyword}}" bindtap="clearSearch">×</text>
+  </view>
   <view class="group-list">
-    <view wx:for="{{list}}" wx:key="id" class="group-row" data-id="{{item.id}}" bindtap="open">
+    <view wx:for="{{visible}}" wx:key="id" class="group-row" data-id="{{item.id}}" bindtap="open">
       <view class="avatar-stack">
-        <image wx:for="{{item.memberAvatars}}" wx:for-item="avatar" wx:for-index="avatarIndex" wx:key="*this" class="stack-avatar avatar-{{avatarIndex}}" src="{{avatar}}" mode="aspectFill"/>
+        <block wx:if="{{item.memberAvatars.length}}">
+          <image wx:for="{{item.memberAvatars}}" wx:for-item="avatar" wx:for-index="avatarIndex" wx:key="*this" class="stack-avatar avatar-{{avatarIndex}}" src="{{avatar}}" mode="aspectFill"/>
+        </block>
+        <view wx:else class="stack-emoji">{{item.avatar}}</view>
       </view>
       <view class="grow"><view class="name">{{item.name}} ({{item.members}})</view><view class="preview">{{item.description}}</view></view>
-      <view class="meta"><view class="time">{{index ? '12:20 07/13' : '1:25'}}</view><view class="badge" wx:if="{{item.joined}}">{{index + 1}}</view></view>
+      <view class="meta"><view class="joined" wx:if="{{item.joined}}">Joined</view></view>
     </view>
   </view>
-  <view class="empty" wx:if="{{!loading && !list.length}}">No groups yet. Tap + to create one.</view>
+  <view class="empty" wx:if="{{!loading && !visible.length && keyword}}">No groups match your search.</view>
+  <view class="empty" wx:if="{{!loading && !visible.length && !keyword}}">No groups yet. Tap + to create one.</view>
   <view class="tab-safe"></view>
 </view>

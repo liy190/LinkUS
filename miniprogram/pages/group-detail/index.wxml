@@ -1,1 +1,28 @@
-<view class="page"><view class="hero center"><view class="big">{{group.avatar}}</view><view class="title">{{group.name}}</view><view class="subtitle">{{group.members}} HKU members</view></view><view class="card"><view class="section-title first">About this group</view><view class="subtitle">{{group.description}}</view></view><button class="button" bindtap="chat" wx:if="{{group.joined}}">Open group chat</button><button class="secondary" bindtap="join">{{group.joined ? 'Leave group' : 'Join group'}}</button></view>
+<view class="page">
+  <view class="hero center"><view class="big">{{group.avatar}}</view><view class="title">{{group.name}}</view><view class="subtitle">{{group.members}} HKU members · Owner {{group.ownerName || 'LinkUS'}}</view></view>
+
+  <view class="card">
+    <view class="section-title first">About this group</view>
+    <view class="subtitle">{{group.description}}</view>
+  </view>
+
+  <view class="card">
+    <view class="section-title first">Announcement</view>
+    <view class="subtitle" wx:if="{{group.announcement}}">{{group.announcement}}</view>
+    <view class="muted" wx:else>No announcement yet.</view>
+    <view class="edit-announcement" wx:if="{{group.isOwner}}" bindtap="editAnnouncement">Edit announcement</view>
+  </view>
+
+  <view class="card">
+    <view class="section-title first">Members</view>
+    <view class="member-row" wx:for="{{members}}" wx:key="name">
+      <image class="member-avatar" src="{{item.avatar}}" mode="aspectFill"/>
+      <view class="name">{{item.name}}</view>
+      <view class="pill" wx:if="{{index === 0 && group.ownerName}}">Owner</view>
+    </view>
+    <view class="member-more" wx:if="{{moreMembers}}">+{{moreMembers}} more members</view>
+  </view>
+
+  <button class="button" bindtap="chat" wx:if="{{group.joined}}">Open group chat</button>
+  <button class="secondary" bindtap="join">{{group.joined ? 'Leave group' : 'Join group'}}</button>
+</view>

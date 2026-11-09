@@ -1,1 +1,10 @@
-<view class="page"><view wx:for="{{list}}" wx:key="id" class="card row" data-id="{{item.id}}" bindtap="open"><view class="activity-icon">{{item.emoji}}</view><view class="grow"><view class="name">{{item.title}}</view><view class="muted">{{item.time}}</view><view class="subtitle">{{item.place}} · {{item.seats}} seats</view></view><view class="pill" wx:if="{{item.joined}}">Joined</view></view><view class="fab" bindtap="create">+</view></view>
+<view class="page">
+  <view class="loading-hint" wx:if="{{loading && !list.length}}">Loading activities…</view>
+  <view class="empty-hint" wx:if="{{!loading && !list.length}}">No activities yet. Tap + to host the first one.</view>
+  <view wx:for="{{list}}" wx:key="id" class="card row" data-id="{{item.id}}" bindtap="open">
+    <view class="activity-icon">{{item.emoji}}</view>
+    <view class="grow"><view class="name">{{item.title}}</view><view class="muted">{{item.time}}</view><view class="subtitle">{{item.place}} · {{item.seats}} seats</view></view>
+    <view class="pill" wx:if="{{item.joined}}">Joined</view>
+  </view>
+  <view class="fab" bindtap="create">+</view>
+</view>

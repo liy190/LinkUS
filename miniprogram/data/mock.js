@@ -1,31 +1,23 @@
-const AVATAR_SHEET = '/images/avatars/students.svg';
-
-const currentUser = {
-  id: 'user-me', nickname: 'Maus', handle: '@maus_hku', avatar: '/images/avatars/saber.svg', avatarPosition: 'avatar-1',
-  bio: 'Design, badminton and late-night study sessions.', faculty: 'Faculty of Engineering',
-  interests: ['Design', 'Badminton', 'Coffee', 'Study buddy'],
-};
+// 只保留"静态校园数据"和"用户偏好默认值"。
+// 人物、动态、活动、消息等业务数据一律来自云端，这里不再提供演示副本。
 
 const privacy = { enabled: false, scope: 'sameActivity', duration: 60, precision: 'place', mutualDistance: false };
 
-const people = [
-  { id: 'u-george', name: 'George', avatar: '/images/avatars/george.svg', avatarPosition: 'avatar-2', status: 'Design thinking all day', placeId: 'main-library', conversationId: 'dm-george' },
-  { id: 'u-saber', name: 'Saber', avatar: '/images/avatars/saber.svg', avatarPosition: 'avatar-1', status: 'Looking for a study buddy', placeId: 'chi-wah', conversationId: 'dm-saber' },
-  { id: 'u-dan', name: 'Dan King', avatar: '/images/avatars/dan.svg', avatarPosition: 'avatar-3', status: 'Badminton after class?', placeId: 'flora-ho', conversationId: 'dm-dan' },
-  { id: 'u-cayla', name: 'Cayla', avatar: '/images/avatars/cayla.svg', avatarPosition: 'avatar-4', status: 'Coffee break', placeId: 'main-building', conversationId: 'dm-cayla' },
-];
+const settings = {
+  dmPrivacy: 'everyone',
+  showFollowing: true,
+  notifyActivity: true,
+  notifyMessage: true,
+  notifySystem: true,
+};
 
-// Source coordinates remain WGS-84; pages convert them to GCJ-02 for WeChat's map.
+// 港大校园地点（WGS-84）。这是静态内容，不是降级数据。
+// 页面运行时统一转成 GCJ-02 用于微信地图。
 const places = [
   { id: 'main-library', name: 'Main Library', short: 'Library', emoji: '📚', latitude: 22.283236, longitude: 114.137743, address: 'Main Library, The University of Hong Kong, Pok Fu Lam', description: 'A central study and research space with quiet floors and group-study areas.', status: 'Moderately busy', people: 12, tags: ['Study', 'Quiet', 'Printing'] },
   { id: 'chi-wah', name: 'Chi Wah Learning Commons', short: 'Chi Wah', emoji: '💻', latitude: 22.2835196, longitude: 114.1347217, address: 'Centennial Campus, The University of Hong Kong, Pok Fu Lam', description: 'Flexible learning space for collaboration, computing and project work.', status: 'Seats available', people: 18, tags: ['Group work', 'Computers', '24-hour zone'] },
   { id: 'main-building', name: 'Main Building', short: 'Main', emoji: '🏛️', latitude: 22.2840174, longitude: 114.1378437, address: 'Main Building, The University of Hong Kong, Pok Fu Lam', description: 'Historic campus landmark and meeting point.', status: 'Open', people: 7, tags: ['Landmark', 'Meeting point'] },
   { id: 'flora-ho', name: 'Flora Ho Sports Centre', short: 'Sports', emoji: '🏸', latitude: 22.2806444, longitude: 114.1311903, address: 'Flora Ho Sports Centre, 111-113 Pok Fu Lam Road', description: 'Sports facilities and a popular place to meet for activities.', status: 'Courts busy', people: 9, tags: ['Sports', 'Badminton', 'Fitness'] },
-];
-
-// Building centroids are sourced from OpenStreetMap's HKU campus geometry
-// (WGS-84). Short labels follow the official HKU campus-map abbreviations.
-const additionalPlaces = [
   { id: 'library-extension', name: 'Library Extension', short: 'LE', category: 'Learning', emoji: 'LE', latitude: 22.2833994, longitude: 114.1377832, address: 'Library Extension, HKU Main Campus', description: 'Teaching rooms and study spaces beside the Main Library.', status: 'Open', people: 6, tags: ['Study', 'Teaching', 'Library'] },
   { id: 'knowles-building', name: 'Knowles Building', short: 'KB', category: 'Learning', emoji: 'KB', latitude: 22.2832509, longitude: 114.1384217, address: 'Knowles Building, HKU Main Campus', description: 'A central teaching building and common meeting point near the library.', status: 'Open', people: 11, tags: ['Classrooms', 'Meeting point'] },
   { id: 'kk-leung', name: 'K.K. Leung Building', short: 'KK', category: 'Learning', emoji: 'KK', latitude: 22.2832968, longitude: 114.1390145, address: 'K.K. Leung Building, HKU Main Campus', description: 'Teaching rooms, offices and student learning spaces.', status: 'Open', people: 8, tags: ['Classrooms', 'Study'] },
@@ -48,52 +40,4 @@ const additionalPlaces = [
   { id: 'central-podium', name: 'Central Podium Levels', short: 'CPD', category: 'Centennial', emoji: 'CPD', latitude: 22.2834053, longitude: 114.1343029, address: 'Central Podium Levels, Centennial Campus, HKU', description: 'The central circulation and classroom levels connecting Centennial Campus towers.', status: 'Open', people: 20, tags: ['Classrooms', 'Campus link'] },
 ];
 
-const campusPlaces = [...places, ...additionalPlaces];
-
-const conversations = [
-  { id: 'dm-george', title: 'George', avatar: '/images/avatars/george.svg', avatarPosition: 'avatar-2', preview: 'I am around the corner from your place.', unread: 5, type: 'dm' },
-  { id: 'dm-saber', title: 'Saber', avatar: '/images/avatars/saber.svg', avatarPosition: 'avatar-1', preview: 'Great, thanks so much!', unread: 2, type: 'dm' },
-  { id: 'group-tennis', title: 'HKU Tennis Club', avatar: '/images/avatars/dan.svg', avatarPosition: 'avatar-3', preview: 'See you at 5 PM.', unread: 3, type: 'group' },
-  { id: 'place-library', title: 'Main Library discussion', avatar: '/images/avatars/cayla.svg', avatarPosition: 'avatar-4', preview: 'Any seats on Level 3?', unread: 0, type: 'place' },
-];
-
-const messages = {
-  'dm-george': [
-      { id: 'm1', from: 'them', author: 'George', avatar: '/images/avatars/george.svg', avatarPosition: 'avatar-2', text: 'I am around the corner from your place.', time: '10:10' },
-    { id: 'm2', from: 'me', text: 'Awesome, thanks for letting me know!', time: '10:11' },
-      { id: 'm3', from: 'them', author: 'George', avatar: '/images/avatars/george.svg', avatarPosition: 'avatar-2', text: 'No problem. I will be there in about 15 minutes.', time: '10:11' },
-  ],
-    'dm-saber': [{ id: 's1', from: 'them', author: 'Saber', avatar: '/images/avatars/saber.svg', avatarPosition: 'avatar-1', text: 'Great, thanks so much!', time: '12:04' }],
-  'group-tennis': [
-      { id: 'g1', from: 'them', author: 'Adela', avatar: '/images/avatars/cayla.svg', avatarPosition: 'avatar-4', text: 'Court 2 is booked for 5 PM.', time: '09:30' },
-    { id: 'g2', from: 'me', text: 'Great, see everyone there.', time: '09:33' },
-  ],
-    'place-library': [{ id: 'p1', from: 'them', author: 'Cayla', avatar: '/images/avatars/cayla.svg', avatarPosition: 'avatar-4', text: 'Level 3 has a few open desks.', time: '14:20' }],
-};
-
-const groups = [
-  { id: 'g-tennis', name: 'HKU Tennis Club', avatar: '🎾', members: 19, description: 'Friendly games, training and tournament meetups.', joined: true, conversationId: 'group-tennis' },
-  { id: 'g-study', name: 'COMP7506 Study Crew', avatar: '📚', members: 8, description: 'Weekly study sessions and project support.', joined: true, conversationId: 'place-library' },
-  { id: 'g-food', name: 'Food only!', avatar: '🍜', members: 7, description: 'Find people for quick meals near campus.', joined: false, conversationId: 'group-food' },
-];
-
-const activities = [
-  { id: 'a-badminton', title: 'Evening badminton', emoji: '🏸', place: 'Flora Ho Sports Centre', time: 'Today 18:30', seats: 3, joined: false, description: 'Casual doubles. Beginners are welcome.' },
-  { id: 'a-study', title: 'COMP7506 project study', emoji: '💻', place: 'Chi Wah Learning Commons', time: 'Tomorrow 14:00', seats: 5, joined: true, description: 'Review requirements and prepare the group demo.' },
-  { id: 'a-coffee', title: 'Coffee and new friends', emoji: '☕', place: 'Main Building', time: 'Friday 16:00', seats: 4, joined: false, description: 'A short, low-pressure meetup for new students.' },
-];
-
-const notifications = [
-  { id: 'n1', title: 'Activity reminder', body: 'COMP7506 project study starts tomorrow at 14:00.', icon: '📅', unread: true, target: '/pages/activity-detail/index?id=a-study' },
-  { id: 'n2', title: 'Campus update', body: 'Main Library is moderately busy.', icon: '📚', unread: true, target: '/pages/place-detail/index?id=main-library' },
-  { id: 'n3', title: 'Group message', body: 'HKU Tennis Club posted a new message.', icon: '💬', unread: false, target: '/pages/chat/index?id=group-tennis&title=HKU%20Tennis%20Club' },
-  { id: 'n4', title: 'Location sharing ended', body: 'Your one-hour location-sharing session has expired.', icon: '🔒', unread: false, target: '/pages/privacy/index' },
-];
-
-const posts = [
-  { id: 'post1', author: 'Cayla', avatar: AVATAR_SHEET, avatarPosition: 'avatar-4', title: 'Quiet study spots?', text: 'Chi Wah has open tables near the windows.', emoji: '📚', place: 'Chi Wah', likes: 20 },
-  { id: 'post2', author: 'Dan King', avatar: AVATAR_SHEET, avatarPosition: 'avatar-3', title: 'Badminton tonight', text: 'One more player needed for casual doubles.', emoji: '🏸', place: 'Flora Ho', likes: 12 },
-  { id: 'post3', author: 'Saber', avatar: AVATAR_SHEET, avatarPosition: 'avatar-1', title: 'Coffee break', text: 'Anyone around Main Building?', emoji: '☕', place: 'Main Building', likes: 8 },
-];
-
-module.exports = { AVATAR_SHEET, currentUser, privacy, people, places: campusPlaces, conversations, messages, groups, activities, notifications, posts };
+module.exports = { privacy, settings, places };

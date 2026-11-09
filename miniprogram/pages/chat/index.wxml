@@ -5,20 +5,22 @@
     <view class="nav-circle more" data-name="More" bindtap="action">•••</view>
   </view>
   <view class="contact-bar">
-    <view class="contact-person">
+    <view class="contact-person" bindtap="openContact">
       <image class="contact-avatar" src="{{avatar}}" mode="aspectFill"/>
-      <view><view class="person-name">{{title}}</view><view class="person-status">LinkUS member</view></view>
+      <view><view class="person-name">{{title}}</view><view class="person-status">{{userId ? 'Tap to view profile' : 'LinkUS member'}}</view></view>
     </view>
     <view class="contact-actions"><view data-name="Video" bindtap="action">▢</view><view data-name="Call" bindtap="action">⌕</view></view>
   </view>
   <scroll-view scroll-y class="messages" scroll-into-view="last">
-    <view class="date">JULY 21 AT 14:14</view>
-    <view wx:for="{{list}}" wx:key="id" class="message-row {{item.from === 'me' ? 'mine' : ''}}">
+    <view class="date">{{dateLabel}}</view>
+    <view class="load-earlier" wx:if="{{hasMore}}" bindtap="loadEarlier">Load earlier messages</view>
+    <view class="chat-empty" wx:if="{{!loading && !list.length}}">No messages yet. Say hello.</view>
+    <view wx:for="{{list}}" wx:key="id" class="message-row {{item.from === 'me' ? 'mine' : ''}}" data-id="{{item.id}}" bindlongpress="longPress">
       <image wx:if="{{item.from !== 'me'}}" class="message-avatar" src="{{item.avatar || avatar}}" mode="aspectFill"/>
       <view class="bubble-stack">
         <view class="author" wx:if="{{item.author && item.from !== 'me'}}">{{item.author}}</view>
-        <view class="bubble">{{item.text}}</view>
-        <view class="time">{{item.time}}<text wx:if="{{item.from === 'me'}}">  ✓✓</text></view>
+        <view class="bubble {{item.recalled ? 'recalled' : ''}}">{{item.text}}</view>
+        <view class="time">{{item.time}}<text wx:if="{{item.from === 'me' && !item.recalled}}">  {{item.read ? '✓✓' : '✓'}}</text></view>
       </view>
       <image wx:if="{{item.from === 'me'}}" class="message-avatar mine-avatar" src="{{currentAvatar}}" mode="aspectFill"/>
     </view>

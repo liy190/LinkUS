@@ -1,0 +1,31 @@
+<view class="page">
+  <view class="card profile-head" wx:if="{{!loading}}">
+    <image class="big-avatar" src="{{user.avatar}}" mode="aspectFill"/>
+    <view class="profile-name">{{user.nickname}}</view>
+    <view class="handle">{{user.handle}}</view>
+    <view class="identity-meta" wx:if="{{user.faculty}}">{{user.faculty}}</view>
+    <view class="subtitle" wx:if="{{user.bio}}">{{user.bio}}</view>
+    <view class="chip-row" wx:if="{{user.interests.length}}">
+      <text class="chip" wx:for="{{user.interests}}" wx:key="*this">{{item}}</text>
+    </view>
+  </view>
+
+  <view class="stats card" wx:if="{{!loading}}">
+    <view class="stat" bindtap="openFollowing"><view class="stat-num">{{stats.following}}</view><view class="muted">Following</view></view>
+    <view class="stat" bindtap="openFollowers"><view class="stat-num">{{stats.followers}}</view><view class="muted">Followers</view></view>
+  </view>
+
+  <view class="actions" wx:if="{{!loading && !isMe}}">
+    <button class="button {{isFollowing ? 'secondary' : ''}}" bindtap="toggleFollow">{{isFollowing ? 'Following' : 'Follow'}}</button>
+    <button class="secondary" bindtap="message">Message</button>
+  </view>
+
+  <view class="notice card" wx:if="{{degraded && !loading}}">Showing basic info only — the cloud function is out of date, redeploy <text class="mono">linkusApi</text> to load the full profile.</view>
+
+  <view class="card" wx:if="{{!isMe}}">
+    <view class="row-link" bindtap="block">{{blocked ? 'Unblock user' : 'Block user'}}<text class="chevron">›</text></view>
+    <view class="row-link" bindtap="report">Report profile<text class="chevron">›</text></view>
+  </view>
+
+  <view class="empty" wx:if="{{loading}}">Loading profile…</view>
+</view>

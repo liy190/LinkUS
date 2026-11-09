@@ -1,0 +1,4 @@
+.search-bar{display:flex;gap:14rpx;align-items:center}
+.search-bar .field{margin:0}
+.link-row{margin:10rpx 0;padding:16rpx 20rpx}
+.emoji{width:64rpx;text-align:center;font-size:34rpx}

@@ -13,6 +13,12 @@ const COLLECTIONS = {
   activities: 'activities',
   notifications: 'notifications',
   feedback: 'feedback',
+  follows: 'follows',
+  posts: 'posts',
+  placeStatuses: 'placeStatuses',
+  favorites: 'favorites',
+  reports: 'reports',
+  blocks: 'blocks',
 };
 
 function cleanText(value, max = 500) {
@@ -32,6 +38,7 @@ function publicUser(user) {
   return {
     userId: user.userId,
     nickname: user.nickname,
+    handle: user.handle || '',
     avatarFileId: user.avatarFileId || '',
     avatarPosition: user.avatarPosition || 'avatar-1',
     faculty: user.faculty || '',
@@ -289,6 +296,10 @@ function publicGroup(group, openid) {
     description: group.description || '',
     joined: members.includes(openid),
     conversationId: group.conversationId,
+    ownerId: group.creatorUserId || '',
+    ownerName: group.creatorName || '',
+    announcement: group.announcement || '',
+    isOwner: group.creatorOpenId === openid,
   };
 }
 
@@ -332,13 +343,19 @@ async function toggleGroup(openid, groupId, join) {
 
 function publicActivity(activity, openid) {
   const members = Array.isArray(activity.memberOpenIds) ? activity.memberOpenIds : [];
+  const memberUserIds = Array.isArray(activity.memberUserIds) ? activity.memberUserIds : [];
+  const capacity = Math.max(2, Number(activity.capacity || 0) || 6);
   return {
     id: activity._id,
     title: activity.title,
     emoji: activity.emoji || '📅',
     place: activity.place,
     time: activity.time,
-    seats: Math.max(0, Number(activity.capacity || 0) - members.length),
+    seats: Math.max(0, capacity - members.length),
+    capacity,
+    memberIds: memberUserIds.length ? memberUserIds : members,
+    creatorId: activity.creatorUserId || '',
+    creatorName: activity.creatorName || '',
     joined: members.includes(openid),
     description: activity.description || '',
   };
@@ -354,6 +371,7 @@ async function createActivity(openid, data) {
   const place = cleanText(data.place, 100);
   const time = cleanText(data.time, 80);
   if (!title || !place || !time) throw new Error('ACTIVITY_FIELDS_REQUIRED');
+  const creator = await getUserByOpenId(openid, true);
   const activity = {
     title,
     place,
@@ -362,7 +380,10 @@ async function createActivity(openid, data) {
     emoji: cleanText(data.emoji || '📅', 8),
     capacity: Math.max(2, Math.min(100, Number(data.capacity) || 6)),
     creatorOpenId: openid,
+    creatorUserId: creator.userId,
+    creatorName: creator.nickname,
     memberOpenIds: [openid],
+    memberUserIds: [creator.userId],
     createdAt: Date.now(),
     updatedAt: Date.now(),
   };
@@ -370,14 +391,58 @@ async function createActivity(openid, data) {
   return { activity: publicActivity({ _id: inserted._id, ...activity }, openid) };
 }
 
+async function updateActivity(openid, activityId, patch) {
+  const result = await db.collection(COLLECTIONS.activities).doc(cleanText(activityId, 80)).get();
+  const activity = result.data;
+  if (activity.creatorOpenId !== openid) throw new Error('NOT_ALLOWED');
+  const next = { updatedAt: Date.now() };
+  if (patch.title !== undefined) next.title = cleanText(patch.title, 80);
+  if (patch.place !== undefined) next.place = cleanText(patch.place, 100);
+  if (patch.time !== undefined) next.time = cleanText(patch.time, 80);
+  if (patch.description !== undefined) next.description = cleanText(patch.description, 400);
+  if (patch.capacity !== undefined) next.capacity = Math.max(2, Math.min(100, Number(patch.capacity) || 6));
+  await db.collection(COLLECTIONS.activities).doc(activityId).update({ data: next });
+  return { activity: publicActivity({ ...activity, ...next }, openid) };
+}
+
+async function cancelActivity(openid, activityId) {
+  const result = await db.collection(COLLECTIONS.activities).doc(cleanText(activityId, 80)).get();
+  const activity = result.data;
+  if (activity.creatorOpenId !== openid) throw new Error('NOT_ALLOWED');
+  const memberOpenIds = Array.isArray(activity.memberOpenIds) ? activity.memberOpenIds : [];
+  await Promise.all(memberOpenIds.filter((id) => id !== openid).map((id) => addNotification(id, {
+    title: 'Activity cancelled',
+    body: `${cleanText(activity.title, 40)} was cancelled by the host.`,
+    icon: '⚠️',
+    target: '/pages/activities/index',
+  })));
+  await db.collection(COLLECTIONS.activities).doc(activityId).remove();
+  return { ok: true };
+}
+
 async function toggleActivity(openid, activityId, join) {
+  const user = await getUserByOpenId(openid, true);
   const result = await db.collection(COLLECTIONS.activities).doc(cleanText(activityId, 80)).get();
   const activity = result.data;
   const members = Array.isArray(activity.memberOpenIds) ? activity.memberOpenIds : [];
+  const memberUserIds = Array.isArray(activity.memberUserIds) ? activity.memberUserIds : [];
   if (join && members.length >= Number(activity.capacity || 0)) throw new Error('ACTIVITY_FULL');
   const updated = join ? [...new Set([...members, openid])] : members.filter((id) => id !== openid);
-  await db.collection(COLLECTIONS.activities).doc(activityId).update({ data: { memberOpenIds: updated, updatedAt: Date.now() } });
-  return { activity: publicActivity({ ...activity, memberOpenIds: updated }, openid) };
+  const updatedUserIds = join ? [...new Set([...memberUserIds, user.userId])] : memberUserIds.filter((id) => id !== user.userId);
+  await db.collection(COLLECTIONS.activities).doc(activityId).update({
+    data: { memberOpenIds: updated, memberUserIds: updatedUserIds, updatedAt: Date.now() },
+  });
+  if (join) {
+    if (activity.creatorOpenId && activity.creatorOpenId !== openid) {
+      await addNotification(activity.creatorOpenId, {
+        title: 'New activity sign-up',
+        body: `${user.nickname} joined ${cleanText(activity.title, 40)}.`,
+        icon: '🙋',
+        target: `/pages/activity-detail/index?id=${activityId}`,
+      });
+    }
+  }
+  return { activity: publicActivity({ ...activity, memberOpenIds: updated, memberUserIds: updatedUserIds }, openid) };
 }
 
 async function listNotifications(openid) {
@@ -405,7 +470,294 @@ async function addFeedback(openid, data) {
   return { ok: true };
 }
 
-exports.main = async (event) => {
+// ---------------------------------------------------------------- social graph
+
+async function currentUserId(openid) {
+  const user = await getUserByOpenId(openid, true);
+  return user.userId;
+}
+
+async function getUser(openid, userId) {
+  const user = await findUserByPublicId(userId);
+  if (!user) throw new Error('USER_NOT_FOUND');
+  return { user: publicUser(user) };
+}
+
+async function getFollowStats(openid, userId) {
+  const target = cleanText(userId, 64) || (await currentUserId(openid));
+  const [following, followers, mine] = await Promise.all([
+    db.collection(COLLECTIONS.follows).where({ followerUserId: target }).count(),
+    db.collection(COLLECTIONS.follows).where({ targetUserId: target }).count(),
+    target === (await currentUserId(openid))
+      ? Promise.resolve({ total: 0 })
+      : db.collection(COLLECTIONS.follows).where({ followerUserId: await currentUserId(openid), targetUserId: target }).count(),
+  ]);
+  return { following: following.total, followers: followers.total, isFollowing: mine.total > 0 };
+}
+
+async function listFollowing(openid, userId) {
+  const target = cleanText(userId, 64) || (await currentUserId(openid));
+  const result = await db.collection(COLLECTIONS.follows).where({ followerUserId: target }).orderBy('createdAt', 'desc').limit(100).get();
+  const users = await Promise.all(result.data.map((row) => findUserByPublicId(row.targetUserId)));
+  return { users: users.filter(Boolean).map(publicUser) };
+}
+
+async function listFollowers(openid, userId) {
+  const target = cleanText(userId, 64) || (await currentUserId(openid));
+  const result = await db.collection(COLLECTIONS.follows).where({ targetUserId: target }).orderBy('createdAt', 'desc').limit(100).get();
+  const users = await Promise.all(result.data.map((row) => findUserByPublicId(row.followerUserId)));
+  return { users: users.filter(Boolean).map(publicUser) };
+}
+
+async function follow(openid, targetUserId) {
+  const meId = await currentUserId(openid);
+  if (!targetUserId || targetUserId === meId) throw new Error('NOT_ALLOWED');
+  const existing = await db.collection(COLLECTIONS.follows).where({ followerUserId: meId, targetUserId }).limit(1).get();
+  if (existing.data.length) return { ok: true };
+  await db.collection(COLLECTIONS.follows).add({ data: { followerUserId: meId, followerOpenId: openid, targetUserId, createdAt: Date.now() } });
+  return { ok: true };
+}
+
+async function unfollow(openid, targetUserId) {
+  const meId = await currentUserId(openid);
+  const existing = await db.collection(COLLECTIONS.follows).where({ followerUserId: meId, targetUserId }).limit(20).get();
+  await Promise.all(existing.data.map((row) => db.collection(COLLECTIONS.follows).doc(row._id).remove()));
+  return { ok: true };
+}
+
+// ---------------------------------------------------------------- moments
+
+function publicPost(post, meId) {
+  const likes = Array.isArray(post.likes) ? post.likes : [];
+  return {
+    id: post._id,
+    authorId: post.authorUserId,
+    authorName: post.authorName,
+    avatarFileId: post.avatarFileId || '',
+    avatarPosition: post.avatarPosition || 'avatar-1',
+    text: post.text,
+    placeId: post.placeId || '',
+    placeName: post.placeName || '',
+    visibility: post.visibility || 'public',
+    likes,
+    likeCount: likes.length,
+    likedByMe: likes.indexOf(meId) >= 0,
+    createdAt: post.createdAt,
+  };
+}
+
+async function listPosts(openid, scope) {
+  const meId = await currentUserId(openid);
+  const mine = await db.collection(COLLECTIONS.follows).where({ followerUserId: meId }).limit(100).get();
+  const following = mine.data.map((row) => row.targetUserId);
+  const result = await db.collection(COLLECTIONS.posts).orderBy('createdAt', 'desc').limit(60).get();
+  let rows = result.data;
+  if (scope === 'mine') rows = rows.filter((post) => post.authorUserId === meId);
+  else if (scope === 'liked') rows = rows.filter((post) => (post.likes || []).indexOf(meId) >= 0);
+  else rows = rows.filter((post) => post.visibility === 'public'
+    || post.authorUserId === meId
+    || (post.visibility === 'followers' && following.indexOf(post.authorUserId) >= 0));
+  return { posts: rows.map((post) => publicPost(post, meId)) };
+}
+
+async function createPost(openid, data) {
+  const user = await getUserByOpenId(openid, true);
+  const text = cleanText(data.text, 500);
+  if (!text) throw new Error('EMPTY_POST');
+  const visibility = ['public', 'followers', 'private'].includes(data.visibility) ? data.visibility : 'public';
+  const post = {
+    authorOpenId: openid,
+    authorUserId: user.userId,
+    authorName: user.nickname,
+    avatarFileId: user.avatarFileId || '',
+    avatarPosition: user.avatarPosition || 'avatar-1',
+    text,
+    visibility,
+    placeId: cleanText(data.placeId, 60),
+    placeName: cleanText(data.placeName, 60),
+    likes: [],
+    createdAt: Date.now(),
+  };
+  const inserted = await db.collection(COLLECTIONS.posts).add({ data: post });
+  return { post: publicPost({ _id: inserted._id, ...post }, user.userId) };
+}
+
+async function deletePost(openid, postId) {
+  const result = await db.collection(COLLECTIONS.posts).doc(cleanText(postId, 80)).get();
+  if (result.data.authorOpenId !== openid) throw new Error('NOT_ALLOWED');
+  await db.collection(COLLECTIONS.posts).doc(postId).remove();
+  return { ok: true };
+}
+
+async function likePost(openid, postId) {
+  const meId = await currentUserId(openid);
+  const result = await db.collection(COLLECTIONS.posts).doc(cleanText(postId, 80)).get();
+  const likes = Array.isArray(result.data.likes) ? result.data.likes.slice() : [];
+  const index = likes.indexOf(meId);
+  if (index >= 0) likes.splice(index, 1);
+  else likes.push(meId);
+  await db.collection(COLLECTIONS.posts).doc(postId).update({ data: { likes } });
+  return { post: publicPost({ ...result.data, likes }, meId) };
+}
+
+// ---------------------------------------------------------------- conversations: read + recall
+
+async function markConversationRead(openid, conversationId) {
+  const conversation = await requireConversation(conversationId, openid);
+  const meId = await currentUserId(openid);
+  const patch = { updatedAt: Date.now() };
+  patch[`lastReadAt.${meId}`] = Date.now();
+  await db.collection(COLLECTIONS.conversations).doc(conversationId).update({ data: patch });
+  return { ok: true, readAt: patch[`lastReadAt.${meId}`] };
+}
+
+async function getReadState(openid, conversationId) {
+  const conversation = await requireConversation(conversationId, openid);
+  const meId = await currentUserId(openid);
+  const lastReadAt = conversation.lastReadAt || {};
+  const partnerIds = (conversation.memberUserIds || []).filter((id) => id !== meId);
+  const partnerReadAt = partnerIds.reduce((latest, id) => Math.max(latest, Number(lastReadAt[id] || 0)), 0);
+  return { partnerReadAt, readAt: Number(lastReadAt[meId] || 0) };
+}
+
+async function recallMessage(openid, conversationId, messageId) {
+  const message = await db.collection(COLLECTIONS.messages).doc(cleanText(messageId, 80)).get();
+  if (message.data.senderOpenId !== openid) throw new Error('NOT_ALLOWED');
+  if (Date.now() - Number(message.data.createdAt || 0) > 2 * 60 * 1000) throw new Error('MESSAGE_TOO_OLD');
+  await db.collection(COLLECTIONS.messages).doc(messageId).update({ data: { text: 'Message recalled', recalled: true } });
+  return { ok: true };
+}
+
+// ---------------------------------------------------------------- groups: announcement
+
+async function setGroupAnnouncement(openid, groupId, announcement) {
+  const result = await db.collection(COLLECTIONS.groups).doc(cleanText(groupId, 80)).get();
+  if (result.data.creatorOpenId !== openid) throw new Error('NOT_ALLOWED');
+  const text = cleanText(announcement, 200);
+  await db.collection(COLLECTIONS.groups).doc(groupId).update({ data: { announcement: text, updatedAt: Date.now() } });
+  return { group: publicGroup({ ...result.data, announcement: text }, openid) };
+}
+
+// ---------------------------------------------------------------- favorites / place status
+
+async function listFavorites(openid) {
+  const meId = await currentUserId(openid);
+  const result = await db.collection(COLLECTIONS.favorites).where({ ownerUserId: meId }).limit(100).get();
+  return { placeIds: result.data.map((row) => row.placeId) };
+}
+
+async function toggleFavorite(openid, placeId) {
+  const meId = await currentUserId(openid);
+  const existing = await db.collection(COLLECTIONS.favorites).where({ ownerUserId: meId, placeId }).limit(1).get();
+  if (existing.data.length) {
+    await db.collection(COLLECTIONS.favorites).doc(existing.data[0]._id).remove();
+    return { ok: true, favorited: false };
+  }
+  await db.collection(COLLECTIONS.favorites).add({ data: { ownerUserId: meId, placeId, createdAt: Date.now() } });
+  return { ok: true, favorited: true };
+}
+
+function publicPlaceStatus(item) {
+  return {
+    id: item._id,
+    placeId: item.placeId,
+    status: item.status,
+    note: item.note || '',
+    authorName: item.authorName || '',
+    createdAt: item.createdAt,
+  };
+}
+
+async function listPlaceStatuses(openid, placeId) {
+  const query = placeId
+    ? db.collection(COLLECTIONS.placeStatuses).where({ placeId }).orderBy('createdAt', 'desc').limit(20)
+    : db.collection(COLLECTIONS.placeStatuses).orderBy('createdAt', 'desc').limit(20);
+  const result = await query.get();
+  return { items: result.data.map(publicPlaceStatus) };
+}
+
+async function setPlaceStatus(openid, data) {
+  const user = await getUserByOpenId(openid, true);
+  const status = cleanText(data.status, 40);
+  if (!status) throw new Error('EMPTY_STATUS');
+  const item = {
+    placeId: cleanText(data.placeId, 60),
+    status,
+    note: cleanText(data.note, 120),
+    authorOpenId: openid,
+    authorUserId: user.userId,
+    authorName: user.nickname,
+    createdAt: Date.now(),
+  };
+  const inserted = await db.collection(COLLECTIONS.placeStatuses).add({ data: item });
+  return { item: publicPlaceStatus({ _id: inserted._id, ...item }) };
+}
+
+// ---------------------------------------------------------------- settings / safety / account
+
+async function updateSettings(openid, settings) {
+  const allowed = ['dmPrivacy', 'showFollowing', 'notifyActivity', 'notifyMessage', 'notifySystem'];
+  const next = {};
+  allowed.forEach((key) => {
+    if (settings && settings[key] !== undefined) next[`settings.${key}`] = settings[key];
+  });
+  if (Object.keys(next).length) {
+    await db.collection(COLLECTIONS.users).doc(openid).update({ data: next });
+  }
+  return { ok: true };
+}
+
+async function reportContent(openid, data) {
+  await db.collection(COLLECTIONS.reports).add({
+    data: {
+      reporterOpenId: openid,
+      targetType: cleanText(data.targetType, 20),
+      targetId: cleanText(data.targetId, 80),
+      reason: cleanText(data.reason, 200),
+      status: 'open',
+      createdAt: Date.now(),
+    },
+  });
+  return { ok: true };
+}
+
+async function blockUser(openid, targetUserId) {
+  const meId = await currentUserId(openid);
+  if (!targetUserId || targetUserId === meId) throw new Error('NOT_ALLOWED');
+  const existing = await db.collection(COLLECTIONS.blocks).where({ ownerUserId: meId, blockedUserId: targetUserId }).limit(1).get();
+  if (!existing.data.length) {
+    await db.collection(COLLECTIONS.blocks).add({ data: { ownerUserId: meId, blockedUserId: targetUserId, createdAt: Date.now() } });
+  }
+  return { ok: true };
+}
+
+async function unblockUser(openid, targetUserId) {
+  const meId = await currentUserId(openid);
+  const existing = await db.collection(COLLECTIONS.blocks).where({ ownerUserId: meId, blockedUserId: targetUserId }).limit(20).get();
+  await Promise.all(existing.data.map((row) => db.collection(COLLECTIONS.blocks).doc(row._id).remove()));
+  return { ok: true };
+}
+
+async function listBlocked(openid) {
+  const meId = await currentUserId(openid);
+  const result = await db.collection(COLLECTIONS.blocks).where({ ownerUserId: meId }).limit(100).get();
+  const users = await Promise.all(result.data.map((row) => findUserByPublicId(row.blockedUserId)));
+  return { users: users.filter(Boolean).map(publicUser) };
+}
+
+async function deleteAccount(openid) {
+  // 软删除：保留消息完整性，但立即退出所有可检索入口
+  await db.collection(COLLECTIONS.users).doc(openid).update({
+    data: { status: 'deleted', nickname: 'Deleted user', bio: '', interests: [], handle: '', updatedAt: Date.now() },
+  });
+  return { ok: true };
+}
+
+exports.main = async (event = {}) => {
+  // 部署自检：不需要微信身份，云开发控制台的「云端测试」可直接调用
+  if (event.action === 'ping') {
+    return { ok: true, build: 'linkus-api-2026-11-09', actions: 47, time: Date.now() };
+  }
   const { OPENID } = cloud.getWXContext();
   if (!OPENID) return { ok: false, error: 'NO_WECHAT_IDENTITY' };
   try {
@@ -431,6 +783,32 @@ exports.main = async (event) => {
     else if (action === 'markNotification') result = await markNotification(OPENID, event.notificationId);
     else if (action === 'markAllNotifications') result = await markAllNotifications(OPENID);
     else if (action === 'addFeedback') result = await addFeedback(OPENID, event);
+    else if (action === 'getUser') result = await getUser(OPENID, event.userId);
+    else if (action === 'getFollowStats') result = await getFollowStats(OPENID, event.userId);
+    else if (action === 'listFollowing') result = await listFollowing(OPENID, event.userId);
+    else if (action === 'listFollowers') result = await listFollowers(OPENID, event.userId);
+    else if (action === 'follow') result = await follow(OPENID, event.userId);
+    else if (action === 'unfollow') result = await unfollow(OPENID, event.userId);
+    else if (action === 'listPosts') result = await listPosts(OPENID, event.scope);
+    else if (action === 'createPost') result = await createPost(OPENID, event);
+    else if (action === 'deletePost') result = await deletePost(OPENID, event.postId);
+    else if (action === 'likePost') result = await likePost(OPENID, event.postId);
+    else if (action === 'markConversationRead') result = await markConversationRead(OPENID, event.conversationId);
+    else if (action === 'getReadState') result = await getReadState(OPENID, event.conversationId);
+    else if (action === 'recallMessage') result = await recallMessage(OPENID, event.conversationId, event.messageId);
+    else if (action === 'setGroupAnnouncement') result = await setGroupAnnouncement(OPENID, event.groupId, event.announcement);
+    else if (action === 'cancelActivity') result = await cancelActivity(OPENID, event.activityId);
+    else if (action === 'updateActivity') result = await updateActivity(OPENID, event.activityId, event.patch || {});
+    else if (action === 'listFavorites') result = await listFavorites(OPENID);
+    else if (action === 'toggleFavorite') result = await toggleFavorite(OPENID, event.placeId);
+    else if (action === 'listPlaceStatuses') result = await listPlaceStatuses(OPENID, event.placeId);
+    else if (action === 'setPlaceStatus') result = await setPlaceStatus(OPENID, event);
+    else if (action === 'updateSettings') result = await updateSettings(OPENID, event.settings);
+    else if (action === 'reportContent') result = await reportContent(OPENID, event);
+    else if (action === 'blockUser') result = await blockUser(OPENID, event.userId);
+    else if (action === 'unblockUser') result = await unblockUser(OPENID, event.userId);
+    else if (action === 'listBlocked') result = await listBlocked(OPENID);
+    else if (action === 'deleteAccount') result = await deleteAccount(OPENID);
     else throw new Error('UNKNOWN_ACTION');
     return { ok: true, ...result };
   } catch (error) {

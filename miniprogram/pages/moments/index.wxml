@@ -1,0 +1,29 @@
+<view class="page">
+  <view class="card composer">
+    <textarea class="field area" placeholder="Share something with campus…" value="{{text}}" bindinput="input" maxlength="500" cursor-spacing="24"/>
+    <view class="composer-bar">
+      <view class="chip" bindtap="pickVisibility">{{visibilityLabel}} ▾</view>
+      <button class="btn-mini" bindtap="publish" disabled="{{posting}}">{{posting ? 'Posting…' : 'Post'}}</button>
+    </view>
+  </view>
+
+  <view class="scope-row">
+    <view wx:for="{{scopes}}" wx:key="key" class="scope {{scope === item.key ? 'scope-on' : ''}}" data-key="{{item.key}}" bindtap="switchScope">{{item.label}}</view>
+  </view>
+
+  <view class="card post" wx:for="{{list}}" wx:key="id">
+    <view class="post-head" data-id="{{item.authorId}}" bindtap="openAuthor">
+      <image class="avatar" src="{{item.avatar}}" mode="aspectFill"/>
+      <view class="grow"><view class="name">{{item.authorName}}</view><view class="muted">{{item.time}}{{item.placeName ? ' · ' + item.placeName : ''}}</view></view>
+      <view class="pill" wx:if="{{item.visibility !== 'public'}}">{{item.visibility}}</view>
+    </view>
+    <view class="post-text">{{item.text}}</view>
+    <view class="post-actions">
+      <view class="like {{item.likedByMe ? 'liked' : ''}}" data-id="{{item.id}}" bindtap="toggleLike">♡ {{item.likeCount}}</view>
+      <view class="delete" wx:if="{{item.mine}}" data-id="{{item.id}}" bindtap="remove">Delete</view>
+    </view>
+  </view>
+
+  <view class="empty" wx:if="{{!loading && !list.length}}">No moments here yet.</view>
+  <view class="empty" wx:if="{{loading}}">Loading…</view>
+</view>

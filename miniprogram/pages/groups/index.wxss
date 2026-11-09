@@ -1,1 +1,11 @@
 .screen{min-height:100vh;background:#fff}.search{height:64rpx;margin:12rpx 16rpx;border-radius:20rpx;background:#fff;color:#111;font-size:28rpx;display:flex;align-items:center;justify-content:center;gap:7rpx;box-shadow:0 0 0 12rpx #ededed}.search image{width:28rpx;height:28rpx;opacity:.55}.search text{opacity:.5}.group-list{padding:12rpx 0}.group-row{display:flex;align-items:flex-start;min-height:84rpx;padding:16rpx 46rpx}.avatar-stack{position:relative;width:84rpx;height:84rpx;margin-right:30rpx;flex-shrink:0}.stack-avatar{position:absolute;width:43rpx;height:43rpx;border-radius:50%;border:3rpx solid #fff;box-sizing:border-box;background:#e7eef8}.avatar-0{left:0;top:0}.avatar-1{right:0;top:0}.avatar-2{left:20rpx;bottom:0}.name{font-size:28rpx;color:#2c2d3a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.preview{max-width:430rpx;color:#9a9bb1;font-size:21rpx;font-weight:600;margin-top:12rpx;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.meta{margin-left:auto;align-self:stretch;display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between}.time{color:#686a8a;font-size:20rpx;font-weight:600}.badge{border-radius:8rpx;background:#40c4ff}.empty{padding:100rpx 60rpx;text-align:center;color:#8b96a7}.tab-safe{height:160rpx}
+
+/* --- local demo polish: search field --- */
+.search{justify-content:flex-start;gap:10rpx}
+.search-input{flex:1;height:64rpx;font-size:26rpx;color:#111}
+.search-placeholder{color:#a6a6a6}
+.search-clear{width:40rpx;text-align:center;color:#9a9bb1;font-size:32rpx;line-height:1}
+
+/* --- local demo polish: group row fallbacks --- */
+.stack-emoji{width:84rpx;height:84rpx;border-radius:50%;background:#eef6ff;display:flex;align-items:center;justify-content:center;font-size:40rpx}
+.joined{padding:4rpx 12rpx;border-radius:999rpx;background:#e9f2ff;color:#1f7de7;font-size:19rpx;font-weight:700}

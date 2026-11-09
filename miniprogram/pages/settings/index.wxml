@@ -1,0 +1,35 @@
+<view class="page">
+  <view class="section-title">Privacy</view>
+  <view class="card">
+    <view class="row-link" bindtap="pickDmPrivacy">Who can message me<text class="value">{{dmLabel}} ›</text></view>
+    <view class="row-link">Show my following list
+      <switch color="#1f7de7" checked="{{settings.showFollowing}}" data-key="showFollowing" bindchange="toggle"/>
+    </view>
+  </view>
+
+  <view class="section-title">Notifications</view>
+  <view class="card">
+    <view class="row-link">Activity reminders
+      <switch color="#1f7de7" checked="{{settings.notifyActivity}}" data-key="notifyActivity" bindchange="toggle"/>
+    </view>
+    <view class="row-link">Messages
+      <switch color="#1f7de7" checked="{{settings.notifyMessage}}" data-key="notifyMessage" bindchange="toggle"/>
+    </view>
+    <view class="row-link">Campus updates
+      <switch color="#1f7de7" checked="{{settings.notifySystem}}" data-key="notifySystem" bindchange="toggle"/>
+    </view>
+  </view>
+
+  <view class="section-title">Data</view>
+  <view class="card">
+    <view class="row-link" bindtap="clearCache">Clear local data<text class="value">{{cacheSize}} ›</text></view>
+    <view class="row-link" bindtap="about">About LinkUS<text class="value">v{{version}} ›</text></view>
+  </view>
+
+  <view class="section-title">Account</view>
+  <view class="card">
+    <view class="row-link" bindtap="logout">Log out<text class="chevron">›</text></view>
+    <view class="row-link danger" bindtap="deleteAccount">Delete account<text class="chevron">›</text></view>
+  </view>
+  <view class="footnote">Deleting your account removes your profile and signs you out on this device.</view>
+</view>

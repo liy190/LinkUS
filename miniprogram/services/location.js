@@ -52,6 +52,20 @@ function list() { return request({ action: 'list' }); }
 function revoke() { return request({ action: 'revoke' }); }
 function disableDistanceConsent() { return request({ action: 'disableDistanceConsent' }); }
 
+// A denied permission is not a dead end: explain what is missing and offer the
+// settings page instead of leaving the user with a one-off toast.
+function promptPermission() {
+  wx.showModal({
+    title: 'Location permission needed',
+    content: 'LinkUS uses your location to show nearby people and measure distance. You can still browse places without it.',
+    confirmText: 'Open settings',
+    cancelText: 'Not now',
+    success: ({ confirm }) => {
+      if (confirm) wx.openSetting({ fail: () => {} });
+    },
+  });
+}
+
 function normalizeSharedUser(item, index = 0) {
   const profile = item.profile || {};
   return {
@@ -70,4 +84,4 @@ function normalizeSharedUser(item, index = 0) {
   };
 }
 
-module.exports = { getCurrentLocation, publish, list, revoke, disableDistanceConsent, normalizeSharedUser };
+module.exports = { getCurrentLocation, publish, list, revoke, disableDistanceConsent, normalizeSharedUser, promptPermission };

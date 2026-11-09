@@ -1,15 +1,15 @@
 <view class="map-screen">
   <map class="real-map" latitude="{{latitude}}" longitude="{{longitude}}" scale="{{scale}}" markers="{{markers}}" show-location="{{showLocation}}" enable-zoom enable-scroll enable-rotate bindmarkertap="markerTap" />
-  <cover-view class="left-tool" bindtap="openProfile">🐬</cover-view>
+  <cover-image class="left-tool" src="/images/figma/dolphin-avatar.png" bindtap="openProfile" aria-label="Open profile"/>
   <cover-view class="right-tools">
-    <cover-view class="circle-tool" bindtap="openChats">💬</cover-view>
-    <cover-view class="circle-tool" bindtap="openPrivacy">🔒</cover-view>
-    <cover-view class="circle-tool small" bindtap="locate">⌖</cover-view>
+    <cover-view class="circle-tool" bindtap="openChats"><cover-image class="tool-icon" src="/images/icons/tool-chat.png"/></cover-view>
+    <cover-view class="circle-tool" bindtap="openPrivacy"><cover-image class="tool-icon" src="/images/icons/tool-lock.png"/></cover-view>
+    <cover-view class="circle-tool small" bindtap="locate"><cover-image class="tool-icon" src="/images/icons/tool-locate.png"/></cover-view>
   </cover-view>
 
   <cover-view class="place-card" wx:if="{{selectedPlace}}" bindtap="openSelected">
     <cover-view class="grab"></cover-view>
-    <cover-view class="search-strip">⌕ Search　Map <cover-view class="dolphin-mini">🐬</cover-view></cover-view>
+    <cover-view class="search-strip">Search HKU places<cover-image class="dolphin-mini" src="/images/figma/dolphin-avatar.png"/></cover-view>
     <cover-view class="place-row">
       <cover-view class="place-copy">
         <cover-view class="place-title">{{selectedPlace.name}}</cover-view>
@@ -32,7 +32,7 @@
 
   <cover-view class="bottom-search" wx:else bindtap="search">
     <cover-view class="grab"></cover-view>
-    <cover-view class="search-strip">⌕ Search HKU places <cover-view class="dolphin-mini">🐬</cover-view></cover-view>
+    <cover-view class="search-strip">Search HKU places<cover-image class="dolphin-mini" src="/images/figma/dolphin-avatar.png"/></cover-view>
     <cover-view class="sharing-status">{{liveStatus}}</cover-view>
   </cover-view>
 </view>

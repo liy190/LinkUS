@@ -1,0 +1,44 @@
+<view class="page">
+  <view class="search-bar">
+    <input class="field" placeholder="People, places, activities, groups" value="{{keyword}}" bindinput="input" bindconfirm="search" confirm-type="search" cursor-spacing="24"/>
+    <button class="btn-mini" bindtap="search">Search</button>
+  </view>
+
+  <block wx:if="{{people.length}}">
+    <view class="section-title">People</view>
+    <view class="card row link-row" wx:for="{{people}}" wx:key="userId" data-id="{{item.userId}}" bindtap="openPerson">
+      <image class="avatar" src="{{item.avatar}}" mode="aspectFill"/>
+      <view class="grow"><view class="name">{{item.nickname}}</view><view class="muted">{{item.handle}}</view></view>
+      <text class="chevron">›</text>
+    </view>
+  </block>
+
+  <block wx:if="{{places.length}}">
+    <view class="section-title">Places</view>
+    <view class="card row link-row" wx:for="{{places}}" wx:key="id" data-id="{{item.id}}" bindtap="openPlace">
+      <view class="emoji">{{item.emoji}}</view>
+      <view class="grow"><view class="name">{{item.name}}</view><view class="muted">{{item.status}}</view></view>
+      <text class="chevron">›</text>
+    </view>
+  </block>
+
+  <block wx:if="{{activities.length}}">
+    <view class="section-title">Activities</view>
+    <view class="card row link-row" wx:for="{{activities}}" wx:key="id" data-id="{{item.id}}" bindtap="openActivity">
+      <view class="emoji">{{item.emoji}}</view>
+      <view class="grow"><view class="name">{{item.title}}</view><view class="muted">{{item.time}} · {{item.place}}</view></view>
+      <text class="chevron">›</text>
+    </view>
+  </block>
+
+  <block wx:if="{{groups.length}}">
+    <view class="section-title">Groups</view>
+    <view class="card row link-row" wx:for="{{groups}}" wx:key="id" data-id="{{item.id}}" bindtap="openGroup">
+      <view class="emoji">{{item.avatar}}</view>
+      <view class="grow"><view class="name">{{item.name}}</view><view class="muted">{{item.members}} members</view></view>
+      <text class="chevron">›</text>
+    </view>
+  </block>
+
+  <view class="empty" wx:if="{{searched && !loading && !people.length && !places.length && !activities.length && !groups.length}}">Nothing matched “{{keyword}}”.</view>
+</view>

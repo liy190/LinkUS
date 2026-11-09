@@ -1,0 +1,3 @@
+.fav-row{padding:18rpx 20rpx}
+.emoji{width:64rpx;text-align:center;font-size:34rpx}
+.remove{color:#c0332e;font-size:21rpx}

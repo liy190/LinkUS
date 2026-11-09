@@ -1,1 +1,41 @@
-<view class="page"><view class="hero center"><view class="big">{{activity.emoji}}</view><view class="title">{{activity.title}}</view><view class="subtitle">{{activity.time}}</view></view><view class="card"><view class="name">📍 {{activity.place}}</view><view class="subtitle">{{activity.description}}</view><view class="divider"></view><view class="muted">{{activity.seats}} seats remaining</view></view><button class="button" bindtap="join">{{activity.joined ? 'Leave activity' : 'Join activity'}}</button></view>
+<view class="page">
+  <view class="hero center">
+    <view class="big">{{activity.emoji}}</view>
+    <view class="title">{{activity.title}}</view>
+    <view class="subtitle">{{activity.time}}</view>
+  </view>
+
+  <view class="card">
+    <view class="name">📍 {{activity.place}}</view>
+    <view class="subtitle">{{activity.description}}</view>
+    <view class="divider"></view>
+    <view class="muted">{{activity.seats}} / {{activity.capacity}} seats left · {{activity.memberCount}} joined</view>
+  </view>
+
+  <view class="card creator-card" wx:if="{{creator}}" bindtap="openCreator">
+    <image class="avatar" src="{{creator.avatar}}" mode="aspectFill"/>
+    <view class="grow">
+      <view class="name">{{creator.nickname}}</view>
+      <view class="muted">Host · tap to view profile</view>
+    </view>
+    <text class="chevron">›</text>
+  </view>
+
+  <view class="card">
+    <view class="section-title first">Who is going ({{members.length}})</view>
+    <view class="member-row" wx:for="{{members}}" wx:key="userId" data-id="{{item.userId}}" bindtap="openMember">
+      <image class="member-avatar" src="{{item.avatar}}" mode="aspectFill"/>
+      <view class="name">{{item.nickname}}</view>
+      <view class="pill" wx:if="{{index === 0}}">Host</view>
+    </view>
+  </view>
+
+  <button class="button" bindtap="join" disabled="{{busy || activity.seats === 0 && !activity.joined}}">
+    {{activity.joined ? 'Leave activity' : (activity.seats === 0 ? 'Activity full' : 'Join activity')}}
+  </button>
+
+  <block wx:if="{{activity.isCreator}}">
+    <button class="secondary" bindtap="edit">Edit activity</button>
+    <view class="danger-link" bindtap="cancelActivity">Cancel this activity</view>
+  </block>
+</view>

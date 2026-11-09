@@ -1,1 +1,5 @@
 .area{min-height:180rpx}
+
+/* --- 表单滚动区，避免键盘遮挡 --- */
+.form-scroll{height:100vh;box-sizing:border-box}
+.form-hint{color:#9aa5b1;font-size:20rpx;line-height:1.6;padding:18rpx 4rpx 40rpx}
